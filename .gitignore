@@ -1,0 +1,9 @@
+src/debian/debhelper-build-stamp
+src/debian/files
+src/debian/sylva-etl.debhelper.log
+src/debian/sylva-etl.substvars
+src/debian/.debhelper
+src/debian/sylva-etl
+sylva-etl_*.deb
+sylva-etl_*.buildinfo
+sylva-etl_*.changes
