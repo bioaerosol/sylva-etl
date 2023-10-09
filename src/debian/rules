@@ -3,10 +3,25 @@
 # output every command that modifies files on the build system.
 #export DH_VERBOSE = 1
 
-export PYBUILD_NAME=sylva-etl
+export PYBUILD_NAME=sylva
+export DH_VIRTUALENV_ARGUMENTS
 
 %:
-	dh $@ --with python3 --system=pybuild
+	dh $@ --with python3 --system=pybuild --buildsystem=none
+
+override_dh_auto_clean:
+	dh_auto_clean
+	rm -rf build
+
+override_dh_auto_build:
+	dh_python3
+	dh_auto_build
+	python3 setup.py build
+
+override_dh_auto_install:
+	dh_auto_install
+	python3 setup.py install --root="$(CURDIR)/debian/sylva-etl/$(DEB_SOURCE)" --install-layout=deb	
+	rm -rf build
 
 #override_dh_install:
 #	dh_install scripts/* /usr/bin
