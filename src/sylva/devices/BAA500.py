@@ -11,7 +11,7 @@ import xml.etree.ElementTree as ElementTree
 
 
 class BAA500(Device):
-    """Concrete implementation for Hund monitor BAA500."""
+    """Actual implementation for Hund monitor BAA500."""
 
     VENDOR = "Hund GmbH"
     BAA500_TIME_ZONE = "Europe/Berlin"
@@ -20,7 +20,7 @@ class BAA500(Device):
     @staticmethod
     def timestamp_to_unix_epoch(timestamp: str):
         """Returns a given timestamp string from BAA500 XML file as unix epoch (seconds). Timestamp is interpreted
-        in time zone Europe/Berlin, seconds are set to 0 in general."""
+        in time zone Europe/Berlin, seconds are set to 0 in general as BAA500 reports for whole minutes."""
         ts = parse(timestamp)
         if ts.time().minute <= 10:
             ts = ts.replace(minute=0)
