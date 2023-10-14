@@ -1,0 +1,8 @@
+/var/log/sylva/sylva.log {
+  weekly
+  missingok
+  rotate 250
+  compress
+  delaycompress
+  create 0644 sylva root
+}

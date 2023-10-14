@@ -23,6 +23,9 @@ override_dh_auto_install:
 	python3 setup.py install --root="$(CURDIR)/debian/sylva-etl/$(DEB_SOURCE)" --install-layout=deb	
 	rm -rf build
 
+override_dh_install:
+	dh_install etc
+
 #override_dh_install:
 #	dh_install scripts/* /usr/bin
 
