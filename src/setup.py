@@ -9,7 +9,9 @@ setup(
     packages=find_packages(where="."),
     package_dir={"sylva": "./sylva"},
     install_requires=[
-        "python-dateutil==2.8.2"
+        "python-dateutil==2.8.2",
+        "pyyaml==6.0.1",
+        "pymongo==4.5.0"
     ],
     tests_require=[],
     version=sylva.__version__,
