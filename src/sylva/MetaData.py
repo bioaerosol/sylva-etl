@@ -1,6 +1,7 @@
+from datetime import datetime
 
 class MetaData(dict):
-    def __init__(self, start: int, end: int, deviceLocation: str, filename: str, path: str, file_hash: str, device_type: str):
+    def __init__(self, start: datetime, end: datetime, deviceLocation: str, filename: str, path: str, file_hash: str, device_type: str):
         super().__init__()
         self["start"] = start
         self["end"] = end

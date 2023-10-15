@@ -18,14 +18,14 @@ class BAA500(Device):
     CONTENT_XML_FILE_PATTERN = re.compile(r".*\/analysis\/polle.*\.xml")
 
     @staticmethod
-    def timestamp_to_unix_epoch(timestamp: str):
+    def timestamp_to_datetime(timestamp: str):
         """Returns a given timestamp string from BAA500 XML file as unix epoch (seconds). Timestamp is interpreted
         in time zone Europe/Berlin, seconds are set to 0 in general as BAA500 reports for whole minutes."""
         ts = parse(timestamp)
         if ts.time().minute <= 10:
             ts = ts.replace(minute=0)
 
-        return int(ts.replace(second=0).replace(tzinfo=tz.gettz(BAA500.BAA500_TIME_ZONE)).timestamp())
+        return ts.replace(second=0).replace(tzinfo=tz.gettz(BAA500.BAA500_TIME_ZONE)) #.timestamp())
 
     def get_data_file_meta_data(self) -> MetaData:
         if self.__isMine():
@@ -40,8 +40,8 @@ class BAA500(Device):
                     device_id = xml_root.find("./WMO-Stationsnummer").text
 
             return MetaData(
-                start=BAA500.timestamp_to_unix_epoch(start.text), 
-                end=BAA500.timestamp_to_unix_epoch(end.text), 
+                start=BAA500.timestamp_to_datetime(start.text), 
+                end=BAA500.timestamp_to_datetime(end.text), 
                 file_hash=super().get_file_hash(),
                 filename=os.path.basename(self.file),
                 device_type=self.get_device_type(),
