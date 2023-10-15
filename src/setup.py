@@ -7,7 +7,7 @@ import sylva as sylva
 setup(
     name='sylva',
     packages=find_packages(where="."),
-    package_dir={"sylva": "."},
+    package_dir={"sylva": "./sylva"},
     install_requires=[
         "python-dateutil==2.8.2",
         "pyyaml==6.0.1",
