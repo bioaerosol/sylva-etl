@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ElementTree
 class BAA500(Device):
     """Actual implementation for Hund monitor BAA500."""
 
-    VENDOR = "Hund GmbH"
+    DEVICE_TYPE = "BAA500"
     BAA500_TIME_ZONE = "Europe/Berlin"
     CONTENT_XML_FILE_PATTERN = re.compile(r".*\/analysis\/polle.*\.xml")
 
@@ -37,10 +37,22 @@ class BAA500(Device):
                     xml_root = ElementTree.fromstring(file_content)
                     start = xml_root.find("./Beginn_der_Probenahme")
                     end = xml_root.find("./Ende_der_Probenahme")
+                    device_id = xml_root.find("./WMO-Stationsnummer").text
 
-            return MetaData(BAA500.timestamp_to_unix_epoch(start.text), BAA500.timestamp_to_unix_epoch(end.text), super().get_file_hash())
+            return MetaData(
+                start=BAA500.timestamp_to_unix_epoch(start.text), 
+                end=BAA500.timestamp_to_unix_epoch(end.text), 
+                file_hash=super().get_file_hash(),
+                filename=os.path.basename(self.file),
+                device_type=self.get_device_type(),
+                deviceLocation=self.get_location(device_id),
+                path=None
+            )
         else:
             return None
+
+    def get_device_type(self) -> str:
+        return BAA500.DEVICE_TYPE
 
     def __isMine(self) -> bool:
         if not os.path.isfile(self.file):

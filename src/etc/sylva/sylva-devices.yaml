@@ -1,0 +1,7 @@
+locations:
+- name: Schneefernerhaus
+  devices:
+    BAA500:
+      - "00013"
+    Poleno:
+      -  "poleno-3"

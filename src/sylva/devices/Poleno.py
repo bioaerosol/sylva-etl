@@ -15,7 +15,7 @@ import json
 class Poleno(Device):
     """Actual implementation for Swisens Poleno."""
 
-    VENDOR = "Swisens"
+    DEVICE_TYPE = "Poleno"
     CONTENT_JSON_FILE_PATTERN = re.compile(r".*\/.*_.*_ev\.json")
     POLENO_TIME_ZONE = "Europe/Berlin"
 
@@ -27,6 +27,8 @@ class Poleno(Device):
 
     def get_data_file_meta_data(self) -> MetaData:
         if self.__isMine():
+            device_id = None
+
             with zipfile.ZipFile(self.file, "r") as data_file:
                 event_file_filenames = [entry for entry in data_file.namelist() if self.CONTENT_JSON_FILE_PATTERN.search(entry)]
                 timestamps = []
@@ -34,11 +36,25 @@ class Poleno(Device):
                     with data_file.open(event_file_filename) as event_file:
                         data = json.load(event_file)
                         timestamps.append(Poleno.timestamp_to_unix_epoch(data["timestamp_dt"]))
+                        device_id = data["metadata"]["poleno_id"] if device_id == None else device_id 
 
             timestamps.sort()
-            return MetaData(timestamps[0], timestamps[len(timestamps) - 1], super().get_file_hash())
+
+            return MetaData(
+                start=timestamps[0], 
+                end=timestamps[len(timestamps) - 1], 
+                file_hash=super().get_file_hash(),
+                filename=os.path.basename(self.file),
+                device_type=self.get_device_type(),
+                deviceLocation=self.get_location(device_id),
+                path=None
+            )
+        
         else:
             return None
+
+    def get_device_type(self) -> str:
+        return Poleno.DEVICE_TYPE
 
     def __isMine(self) -> bool:
         if not os.path.isfile(self.file):
