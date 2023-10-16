@@ -19,3 +19,24 @@ class MetaData(dict):
             "fileHash": self.get("fileHash"),
             "deviceTyp": self.get("deviceType")
         }
+    
+    def get_start(self) -> datetime:
+        return self.get("start")
+
+    def get_end(self) -> datetime:
+        return self.get("end")
+
+    def get_device_location(self) -> str:
+        return self.get("deviceLocation")
+
+    def get_filename(self) -> str:
+        return self.get("fileName")
+
+    def get_path(self) -> str:
+        return self.get("path")
+
+    def get_file_hash(self) -> str:
+        return self.get("fileHash")
+
+    def get_device_type(self) -> str:
+        return self.get("deviceType")
