@@ -27,11 +27,11 @@ class ArchiveRepository():
         return self.client.sylva.archive
     
     def has(self, meta_data: MetaData) -> bool:
-        return self.__get_archive_collection().find_one(meta_data.get_key_fields())
+        return self.__get_archive_collection().find_one({ "$and": meta_data.get_key_fields_array() }) is not None
     
     def add(self, meta_data: MetaData):
         return self.__get_archive_collection().insert_one(meta_data)
     
     def get_archive_path(self, meta_data: MetaData):
-        return os.path.join(self.__folder_configuration[Folder.ARCHIVE.value], meta_data["deviceLocation"], meta_data["start"].strftime("%Y"), meta_data["start"].strftime("%m"))
+        return os.path.join(self.__folder_configuration[Folder.ARCHIVE.value], meta_data["deviceLocation"], meta_data.get_device_type(), meta_data.get_start().strftime("%Y"), meta_data.get_start().strftime("%m"), meta_data.get_start().strftime("%d"))
 
