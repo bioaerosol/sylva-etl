@@ -16,3 +16,53 @@ db.createUser(
     }
 )
 ```
+
+# Configuration
+The package is configured in two YAML files in /etc/sylva:
+
+## Package Configuration
+| Key | Description |
+| --- | --- |
+| database.host | Host of MongoDB |
+| database.port | Port of MongoDB |
+| database.user | User to access MongoDB |
+| database.password | Password to access MongoDB |
+| folders.incoming | Path to incoming folder |
+| folders.archive | Path to archive folder |
+| folders.trash | Path to trash folder |
+
+Example with default values:
+```yaml
+database:
+  host: localhost
+  port: 27017
+  user: sylva
+  password: changeit
+folders:
+  incoming: /home/sylva/incoming
+  archive: /home/sylva/archive
+  trash: /home/sylva/trash
+```
+## Device Configuration
+| Key | Description |
+| --- | --- |
+| locations | Array of locations where devices are installed |
+| locations[n].name | Name of the location. |
+| locations[n].devices | Array of devices installed at this location |
+| locations[n].devices[n].BAA500 | Array of BAA500 devces installed at this location. Array contains entries of type string that refer to the ID of the devices installed at this location. |
+| locations[n].devices[n].Poleno | Array of Poleno devces installed at this location. Array contains entries of type string that refer to the ID of the devices installed at this location. |
+
+Example with some random values:
+```yaml
+locations:
+- name: Schneefernerhaus
+  devices:
+    Poleno:
+      - "poleno-1"
+      - "poleno-2"
+    BAA500:
+      - "00013"
+    Poleno:
+      -  "poleno-3"
+```
+
