@@ -1,0 +1,20 @@
+#!/bin/bash
+
+/bin/mongosh <<EOF
+    use admin
+
+    db.createUser(
+    {
+        user: "myUserAdmin",
+        pwd: "abc123",
+        roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+    }
+    )
+
+    db.createUser(
+    {
+        user: "sylva", 
+        pwd: "changeit", 
+        roles: [ { role: "readWrite", db: "sylva" } ]
+    }
+    )

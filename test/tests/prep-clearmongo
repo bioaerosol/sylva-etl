@@ -1,0 +1,8 @@
+#!/bin/bash
+
+/bin/mongosh <<EOF
+    use admin
+    db.auth("sylva", "changeit")
+
+    use sylva
+    db.archive.deleteMany({})

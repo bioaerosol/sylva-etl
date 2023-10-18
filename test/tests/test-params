@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# simple archive with positive result
+cd /home/sylva
+
+mkdir foo_incoming
+mkdir foo_archive
+mkdir foo_trash
+
+cp testdata/baa500.zip foo_incoming
+cp testdata/poleno.zip foo_incoming
+
+sylva-archive --incomingDir /home/sylva/foo_incoming --archiveDir /home/sylva/foo_archive --trashDir /home/sylva/foo_trash
+
+if [ ! -f "/home/sylva/foo_archive/Schneefernerhaus/Poleno/2023/09/18/poleno.zip" ]; then
+    echo "File poleno.zip not at expected place."
+    exit 1
+fi
+
+if [ ! -f "/home/sylva/foo_archive/Schneefernerhaus/BAA500/2020/02/22/baa500.zip" ]; then
+    echo "File baa500.zip not at expected place."
+    exit 1
+fi
+
+if [ ! -z "$(ls -A /home/sylva/foo_incoming)" ]; then
+    echo "Incoming folder is not empty but was expected to be empty."
+    exit 1
+fi
+
+# duplicate file
+cp testdata/poleno.zip foo_incoming/poleno-duplicate.zip
+sylva-archive --incomingDir /home/sylva/foo_incoming --archiveDir /home/sylva/foo_archive --trashDir /home/sylva/foo_trash
+
+if [ ! -n "$(find "/home/sylva/foo_trash" -type f -name "*-poleno-duplicate.zip")" ]; then 
+    echo "File expected in trash is not there."
+    exit 1
+fi
+
+# trash file
+cp testdata/invalid.zip foo_incoming/
+sylva-archive --incomingDir /home/sylva/foo_incoming --archiveDir /home/sylva/foo_archive --trashDir /home/sylva/foo_trash
+
+if [ ! -n "$(find "/home/sylva/foo_trash" -type f -name "*-invalid.zip")" ]; then 
+    echo "File expected in trash is not there."
+    exit 1
+fi
