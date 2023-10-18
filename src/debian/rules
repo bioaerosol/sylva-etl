@@ -24,6 +24,7 @@ override_dh_auto_install:
 	rm -rf build
 
 override_dh_install:
+	dh_install scripts/* /usr/bin
 	dh_install etc
 
 #override_dh_install:
