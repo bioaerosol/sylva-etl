@@ -1,4 +1,4 @@
-from sylva.devices.Device import Device
+from sylva.devices.Device import Device, DeviceType
 from sylva.MetaData import MetaData
 
 from dateutil.parser import parse
@@ -15,7 +15,7 @@ import json
 class Poleno(Device):
     """Actual implementation for Swisens Poleno."""
 
-    DEVICE_TYPE = "Poleno"
+    DEVICE_TYPE = DeviceType.Poleno.value
     CONTENT_JSON_FILE_PATTERN = re.compile(r".*\/.*_.*_ev\.json")
     POLENO_TIME_ZONE = "Europe/Berlin"
 

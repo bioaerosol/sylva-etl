@@ -4,7 +4,12 @@ from sylva.repositories import DevicesRepository
 import hashlib
 
 from abc import abstractmethod
+from enum import Enum
 
+class DeviceType(Enum):
+    Poleno = "Poleno"
+    BAA500 = "BAA500"
+    RapidE = "Rapid-E+"
 
 class Device:
     HASH_ALGORITHM = "sha256"

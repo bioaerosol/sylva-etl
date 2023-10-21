@@ -1,4 +1,4 @@
-from sylva.devices.Device import Device
+from sylva.devices.Device import Device, DeviceType
 from sylva.MetaData import MetaData
 
 from dateutil.parser import parse
@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ElementTree
 class BAA500(Device):
     """Actual implementation for Hund monitor BAA500."""
 
-    DEVICE_TYPE = "BAA500"
+    DEVICE_TYPE = DeviceType.BAA500.value
     BAA500_TIME_ZONE = "Europe/Berlin"
     CONTENT_XML_FILE_PATTERN = re.compile(r".*\/analysis\/polle.*\.xml")
 
