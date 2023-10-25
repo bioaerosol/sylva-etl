@@ -25,7 +25,7 @@ class BAA500(Device):
         if ts.time().minute <= 10:
             ts = ts.replace(minute=0)
 
-        return ts.replace(second=0).replace(tzinfo=tz.gettz(BAA500.BAA500_TIME_ZONE)) #.timestamp())
+        return ts.replace(second=0).replace(tzinfo=tz.gettz(BAA500.BAA500_TIME_ZONE)) 
 
     def get_data_file_meta_data(self) -> MetaData:
         if self.__isMine():

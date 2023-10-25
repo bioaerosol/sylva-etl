@@ -7,3 +7,6 @@ folders:
   incoming: /home/sylva/incoming
   archive: /home/sylva/archive
   trash: /home/sylva/trash
+hooks:
+  BAA500: 
+  - "date"

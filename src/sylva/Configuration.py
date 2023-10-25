@@ -25,3 +25,9 @@ class Configuration():
     
     def get_folders(self):
         return self.__configuration["folders"]
+    
+    def get_hooks(self, device_type_name: str) -> []:
+        if (device_type_name in self.__configuration["hooks"]):
+            return self.__configuration["hooks"][device_type_name]
+        else:
+            return []
