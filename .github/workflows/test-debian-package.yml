@@ -8,13 +8,40 @@ on:
 
 jobs:
   build:
+    name: Build Debian Package
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set up Debian tools
+        run: sudo apt-get install -y dpkg-dev
+
+      - uses: jtdor/build-deb-action@v1
+        with:
+          docker-image: ubuntu:jammy
+          buildpackage-opts: --build=binary --no-sign
+          source-dir: src
+          extra-build-deps: python3-pip
+
+      - uses: actions/cache@v3
+        with:
+          path: debian/artifacts
+          key: artifacts-${{ github.run_id }}
+
+  test:
+    name: Test Debian Package
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/cache@v3
+        with:
+            path: debian/artifacts
+            key: artifacts-${{ github.run_id }}
+
       - name: Build Test Docker Image
         run: |
+          cp debian/artifacts/*.deb ./test
           cd test
           docker build .
