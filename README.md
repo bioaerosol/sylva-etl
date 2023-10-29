@@ -1,3 +1,5 @@
+[![Test Debian Package](https://github.com/bioaerosol/sylva-etl/actions/workflows/test-debian-package.yml/badge.svg)](https://github.com/bioaerosol/sylva-etl/actions/workflows/test-debian-package.yml)
+
 # Installation
 ## MongoDB
 This package uses a MongoDB which access data is to be configured in /etc/sylva/sylva-config.yaml.
