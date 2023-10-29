@@ -46,6 +46,7 @@ jobs:
           docker-image: ubuntu:jammy
           buildpackage-opts: --build=binary --no-sign
           source-dir: src
+          extra-build-deps: python3-pip
       - uses: actions/cache@v3
         with:
           path: debian/artifacts
