@@ -1,17 +1,22 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 class MetaData(dict):
-    def __init__(self, start: datetime, end: datetime, deviceLocation: str, filename: str, file_hash: str, device_type: str):
+    def __init__(self, start: datetime, end: datetime, deviceLocation: str, file_name: str, file_hash: str, device_type: str, is_archived : bool = False):
         super().__init__()
         self["start"] = start
         self["end"] = end
         self["deviceLocation"] = deviceLocation
-        self["fileName"] = filename
-        self["fileHash"] = file_hash
         self["deviceType"] = device_type
+        self["filePath"] = None
+        self["fileName"] = file_name
+        self["fileHash"] = file_hash
+        self["isArchived"] = is_archived
+        self["createdOn"] = datetime.now(timezone.utc)
+        self["archivedOn"] = None
 
-    def set_archive_path(self, path) -> None:
-        self["path"] = path
+
+    def set_file_path(self, path) -> None:
+        self["filePath"] = path
 
     def get_key_fields_array(self):
         return [
@@ -31,8 +36,8 @@ class MetaData(dict):
     def get_device_location(self) -> str:
         return self.get("deviceLocation")
 
-    def get_filename(self) -> str:
-        return self.get("fileName")
+    def get_file_path(self) -> str:
+        return self.get("filePath")
 
     def get_path(self) -> str:
         return self.get("path")
@@ -42,3 +47,6 @@ class MetaData(dict):
 
     def get_device_type(self) -> str:
         return self.get("deviceType")
+    
+    def get_is_archived(self) -> bool:
+        return self.get("isArchived")

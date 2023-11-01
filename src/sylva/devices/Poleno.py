@@ -44,7 +44,7 @@ class Poleno(Device):
                 start=timestamps[0], 
                 end=timestamps[len(timestamps) - 1], 
                 file_hash=super().get_file_hash(),
-                filename=os.path.basename(self.file),
+                file_name=os.path.basename(self.file),
                 device_type=self.get_device_type(),
                 deviceLocation=self.get_location(device_id)
             )

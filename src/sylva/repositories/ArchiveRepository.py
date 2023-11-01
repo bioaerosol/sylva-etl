@@ -40,7 +40,7 @@ class ArchiveRepository():
         archive_target_file = os.path.join(archive_target_path, os.path.basename(source_file))
 
         # update meta_data with target
-        meta_data.set_archive_path(archive_target_path)
+        meta_data.set_file_path(archive_target_path)
         
         # file system operations
         os.makedirs(archive_target_path, exist_ok=True)

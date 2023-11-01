@@ -32,20 +32,19 @@ class BAA500(Device):
             with zipfile.ZipFile(self.file, "r") as data_file:
                 xml_filename = [entry for entry in data_file.namelist() if self.CONTENT_XML_FILE_PATTERN.search(entry)][0]
                 with data_file.open(xml_filename) as xml_file:
-                    # Lies den Inhalt der Datei
                     file_content = xml_file.read()
                     xml_root = ElementTree.fromstring(file_content)
                     start = xml_root.find("./Beginn_der_Probenahme")
                     end = xml_root.find("./Ende_der_Probenahme")
-                    device_id = xml_root.find("./WMO-Stationsnummer").text
+                    device_id = xml_root.find("./WMO-Stationsnummer")
 
             return MetaData(
                 start=BAA500.timestamp_to_datetime(start.text), 
                 end=BAA500.timestamp_to_datetime(end.text), 
                 file_hash=super().get_file_hash(),
-                filename=os.path.basename(self.file),
+                file_name=os.path.basename(self.file),
                 device_type=self.get_device_type(),
-                deviceLocation=self.get_location(device_id)
+                deviceLocation=self.get_location(device_id.text)
             )
         else:
             return None
