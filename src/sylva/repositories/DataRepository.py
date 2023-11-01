@@ -8,7 +8,7 @@ from sylva.MetaData import MetaData
 from sylva.Configuration import DatabaseConfig, Folder
 from sylva.Configuration import Configuration
 
-class ArchiveRepository():
+class DataRepository():
     client = None
     archive_base_path = None
     trash_base_path = None
@@ -29,7 +29,7 @@ class ArchiveRepository():
 
 
     def __get_archive_collection(self) -> Collection:
-        return self.client.sylva.archive
+        return self.client.sylva.data
     
     def has(self, meta_data: MetaData) -> bool:
         return self.__get_archive_collection().find_one({ "$and": meta_data.get_key_fields_array() }) is not None
