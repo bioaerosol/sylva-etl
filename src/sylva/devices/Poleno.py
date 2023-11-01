@@ -1,10 +1,7 @@
 from sylva.devices.Device import Device, DeviceType
 from sylva.MetaData import MetaData
 
-from dateutil.parser import parse
-from dateutil import tz
-
-from datetime import datetime
+from datetime import datetime, timezone
 
 import re
 import os
@@ -22,8 +19,8 @@ class Poleno(Device):
     @staticmethod
     def timestamp_to_datetime(timestamp: str):
         """Returns a given timestamp string from Poleno JSON event file as unix epoch (seconds). Timestamp is interpreted
-        in time zone Europe/Berlin, milliseconds are set to 0 in general purpose of this is indexing only."""
-        return datetime.strptime(timestamp, "%Y-%m-%d_%H.%M.%S.%f").replace(microsecond=0).replace(tzinfo=tz.gettz("Europe/Berlin")) #.timestamp())
+        in time zone UTC, milliseconds are set to 0 in general purpose of this is indexing only."""
+        return datetime.strptime(timestamp, "%Y-%m-%d_%H.%M.%S.%f").replace(microsecond=0).replace(tzinfo=timezone.utc)
 
     def get_data_file_meta_data(self) -> MetaData:
         if self.__isMine():
