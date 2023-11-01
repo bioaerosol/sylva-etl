@@ -32,6 +32,7 @@ The package is configured in two YAML files in /etc/sylva:
 | folders.incoming | Path to incoming folder |
 | folders.archive | Path to archive folder |
 | folders.trash | Path to trash folder |
+| hooks.[monitorType] | List of hooks to bve applied for files from monitors of mentioned type. |
 
 Example with default values:
 ```yaml
@@ -44,6 +45,9 @@ folders:
   incoming: /home/sylva/incoming
   archive: /home/sylva/archive
   trash: /home/sylva/trash
+hooks:
+  Poleno:
+  - md5sum
 ```
 ## Device Configuration
 | Key | Description |
