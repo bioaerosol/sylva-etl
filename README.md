@@ -19,6 +19,21 @@ db.createUser(
 )
 ```
 
+## Debian Package (this)
+### Download
+To install latest release provide a GitHub PAT as environment variable $GITHUBPAT (as long as this repo is not public)
+```
+GITHUBPAT=<PAT>
+```
+and then download latest release using this command:
+```
+wget -O $(curl -H "Authorization: token $GITHUBPAT" -s https://api.github.com/repos/bioaerosol/sylva-etl/releases/latest | jq '.assets[] | select(.name | endswith(".deb")) | .name' | tr -d '"') --header "Authorization: token $GITHUBPAT" --header "Accept: application/octet-stream" $(curl -H "Authorization: token $GITHUBPAT" -s https://api.github.com/repos/bioaerosol/sylva-etl/releases/latest | jq '.assets[] | select(.name | endswith(".deb")) | .url' | tr -d '"')
+```
+### Installation
+Package can be installed as any other Debian package, e.g.:
+```
+sudo apt install <package-file>
+```
 # Configuration
 The package is configured in two YAML files in /etc/sylva:
 
