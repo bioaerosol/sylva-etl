@@ -7,7 +7,7 @@ Its up to you to install an appropriate database. For Ubuntu it could look like 
 ```
 sudo apt install mongodb
 ```
-Then, enable MongoDBs access control as descriped at https://www.mongodb.com/docs/v3.4/tutorial/enable-authentication. This package will create its colletions in a database called "sylva". That's why you should create a dedicated user to be used by this package which has readWrite access to database "sylva", e.g.
+Then, enable MongoDBs access control as descriped at https://www.mongodb.com/docs/v3.4/tutorial/enable-authentication. This package will create its collections in a database called "sylva". That's why you should create a dedicated user to be used by this package which has readWrite access to database "sylva", e.g.
 ```
 use admin
 db.createUser(
@@ -68,7 +68,5 @@ locations:
       - "poleno-2"
     BAA500:
       - "00013"
-    Poleno:
-      -  "poleno-3"
 ```
 
