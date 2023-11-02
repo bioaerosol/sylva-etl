@@ -30,7 +30,7 @@ The package is configured in two YAML files in /etc/sylva:
 | database.user | User to access MongoDB |
 | database.password | Password to access MongoDB |
 | folders.incoming | Path to incoming folder |
-| folders.archive | Path to archive folder |
+| folders.storage | Path to storage folder |
 | folders.trash | Path to trash folder |
 | hooks.[monitorType] | List of hooks to bve applied for files from monitors of mentioned type. |
 
@@ -43,7 +43,7 @@ database:
   password: changeit
 folders:
   incoming: /home/sylva/incoming
-  archive: /home/sylva/archive
+  storage: /home/sylva/storage
   trash: /home/sylva/trash
 hooks:
   Poleno:

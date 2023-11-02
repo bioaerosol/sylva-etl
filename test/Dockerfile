@@ -15,7 +15,7 @@ COPY    sylva-etl_*_all.deb /setup/
 
 RUN     apt -y install /setup/sylva-etl_*_all.deb && \
         mkdir /home/sylva/incoming && \
-        mkdir /home/sylva/archive && \
+        mkdir /home/sylva/storage && \
         mkdir /home/sylva/trash && \
         mkdir /home/sylva/testdata && \
         mkdir /home/sylva/tests
@@ -25,6 +25,6 @@ COPY    tests /home/sylva/tests
 
 RUN     mongod --fork --auth --logpath /var/log/mongod.log && \
         bash /home/sylva/tests/prep-clearmongo && \
-        bash /home/sylva/tests/test-archive && \
+        bash /home/sylva/tests/test-storage && \
         bash /home/sylva/tests/prep-clearmongo && \
         bash /home/sylva/tests/test-params

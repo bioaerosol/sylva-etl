@@ -10,7 +10,7 @@ class DatabaseConfig(Enum):
 
 class Folder(Enum):
     INCOMING = "incoming"
-    ARCHIVE = "archive"
+    STORAGE = "storage"
     TRASH = "trash"
 
 class Configuration():

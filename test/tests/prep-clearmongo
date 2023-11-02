@@ -5,4 +5,4 @@
     db.auth("sylva", "changeit")
 
     use sylva
-    db.data.deleteMany({})
+    db.storage.deleteMany({})

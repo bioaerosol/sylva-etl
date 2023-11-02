@@ -1,18 +1,18 @@
 #!/bin/bash
 
-# simple archive with positive result
+# simple store with positive result
 cd /home/sylva
 cp testdata/baa500.zip incoming/
 cp testdata/poleno.zip incoming/
 
-sylva-archive
+sylva-store
 
-if [ ! -f "/home/sylva/archive/Schneefernerhaus/Poleno/2023/09/18/poleno.zip" ]; then
+if [ ! -f "/home/sylva/storage/Schneefernerhaus/Poleno/2023/09/18/poleno.zip" ]; then
     echo "File poleno.zip not at expected place."
     exit 1
 fi
 
-if [ ! -f "/home/sylva/archive/Schneefernerhaus/BAA500/2020/02/22/baa500.zip" ]; then
+if [ ! -f "/home/sylva/storage/Schneefernerhaus/BAA500/2020/02/22/baa500.zip" ]; then
     echo "File baa500.zip not at expected place."
     exit 1
 fi
@@ -24,7 +24,7 @@ fi
 
 # duplicate file
 cp testdata/poleno.zip incoming/poleno-duplicate.zip
-sylva-archive
+sylva-store
 
 if [ ! -n "$(find "/home/sylva/trash" -type f -name "*-poleno-duplicate.zip")" ]; then 
     echo "File expected in trash is not there."
@@ -33,7 +33,7 @@ fi
 
 # trash file
 cp testdata/invalid.zip incoming/
-sylva-archive
+sylva-store
 
 if [ ! -n "$(find "/home/sylva/trash" -type f -name "*-invalid.zip")" ]; then 
     echo "File expected in trash is not there."

@@ -3,11 +3,11 @@
 path=$(uuidgen)
 mkdir $path
 mkdir $path/incoming
-mkdir $path/archive
+mkdir $path/storage
 mkdir $path/trash
 
 cp ../test/testdata/*.zip $path/incoming/
 
-sylva-archive --incomingDir $path/incoming --archiveDir $path/archive --trashDir $path/trash
+sylva-store --incomingDir $path/incoming --storageDir $path/storage --trashDir $path/trash
 
 rm $path -r

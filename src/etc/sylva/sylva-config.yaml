@@ -5,7 +5,7 @@ database:
   password: changeit
 folders:
   incoming: /home/sylva/incoming
-  archive: /home/sylva/archive
+  storage: /home/sylva/storage
   trash: /home/sylva/trash
 hooks:
   BAA500: 
