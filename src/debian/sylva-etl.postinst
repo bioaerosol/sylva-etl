@@ -20,7 +20,7 @@ set -e
 
 case "$1" in
     configure)
-        id -u sylva &>/dev/null || adduser --system --shell /bin/bash --group sylva
+        id -u sylva >/dev/null 2>&1 || adduser --system --shell /bin/bash --group sylva
 
         mkdir -p /var/log/sylva
         chown sylva.root /var/log/sylva
