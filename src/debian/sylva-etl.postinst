@@ -28,6 +28,9 @@ case "$1" in
         chmod g+s /var/log/sylva-etl
 
         chmod 0644 /etc/logrotate.d/sylva-etl
+
+        chgrp sylva /etc/sylva-etl/*
+        chmod o-r /etc/sylva-etl/*
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
