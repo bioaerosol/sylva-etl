@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# should not do anything
+cd /home/sylva
+cp testdata/baa500.zip incoming/
+cp testdata/poleno.zip incoming/
+
+sylva-store
+
+if [ -f "/home/sylva/storage/Schneefernerhaus/Poleno/2023/09/18/poleno.zip" ]; then
+    echo "File poleno.zip should not be stored."
+    exit 1
+fi
+
+if [ -f "/home/sylva/storage/Schneefernerhaus/BAA500/2020/02/22/baa500.zip" ]; then
+    echo "File baa500.zip should not be stored."
+    exit 1
+fi
+
+if [ -z "$(ls -A /home/sylva/incoming)" ]; then
+    echo "Incoming folder should not be empty."
+    exit 1
+fi

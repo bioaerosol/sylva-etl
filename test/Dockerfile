@@ -24,6 +24,8 @@ COPY    testdata /home/sylva/testdata
 COPY    tests /home/sylva/tests
 
 RUN     mongod --fork --auth --logpath /var/log/mongod.log && \
+        bash /home/sylva/tests/prep-clearmongo  && \
+        bash /home/sylva/tests/test-disabled-by-default  && \
         bash /home/sylva/tests/prep-clearmongo && \
         bash /home/sylva/tests/test-storage && \
         bash /home/sylva/tests/prep-clearmongo && \

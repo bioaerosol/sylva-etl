@@ -10,7 +10,7 @@ mkdir foo_trash
 cp testdata/baa500.zip foo_incoming
 cp testdata/poleno.zip foo_incoming
 
-sylva-store --incomingDir /home/sylva/foo_incoming --storageDir /home/sylva/foo_storage --trashDir /home/sylva/foo_trash
+sylva-store --incomingDir /home/sylva/foo_incoming --storageDir /home/sylva/foo_storage --trashDir /home/sylva/foo_trash --overrideEnabled
 
 if [ ! -f "/home/sylva/foo_storage/Schneefernerhaus/Poleno/2023/09/18/poleno.zip" ]; then
     echo "File poleno.zip not at expected place."
@@ -29,7 +29,7 @@ fi
 
 # duplicate file
 cp testdata/poleno.zip foo_incoming/poleno-duplicate.zip
-sylva-store --incomingDir /home/sylva/foo_incoming --storageDir /home/sylva/foo_storage --trashDir /home/sylva/foo_trash
+sylva-store --incomingDir /home/sylva/foo_incoming --storageDir /home/sylva/foo_storage --trashDir /home/sylva/foo_trash --overrideEnabled
 
 if [ ! -n "$(find "/home/sylva/foo_trash" -type f -name "*-poleno-duplicate.zip")" ]; then 
     echo "File expected in trash is not there."
@@ -38,7 +38,7 @@ fi
 
 # trash file
 cp testdata/invalid.zip foo_incoming/
-sylva-store --incomingDir /home/sylva/foo_incoming --storageDir /home/sylva/foo_storage --trashDir /home/sylva/foo_trash
+sylva-store --incomingDir /home/sylva/foo_incoming --storageDir /home/sylva/foo_storage --trashDir /home/sylva/foo_trash --overrideEnabled
 
 if [ ! -n "$(find "/home/sylva/foo_trash" -type f -name "*-invalid.zip")" ]; then 
     echo "File expected in trash is not there."

@@ -5,6 +5,8 @@ cd /home/sylva
 cp testdata/baa500.zip incoming/
 cp testdata/poleno.zip incoming/
 
+cat /etc/sylva-etl/sylva-config.yaml | sed -i "s/enabled: false/enabled: true/" /etc/sylva-etl/sylva-config.yaml && \
+
 sylva-store
 
 if [ ! -f "/home/sylva/storage/Schneefernerhaus/Poleno/2023/09/18/poleno.zip" ]; then
@@ -39,3 +41,5 @@ if [ ! -n "$(find "/home/sylva/trash" -type f -name "*-invalid.zip")" ]; then
     echo "File expected in trash is not there."
     exit 1
 fi
+
+cat /etc/sylva-etl/sylva-config.yaml | sed -i "s/enabled: true/enabled: false/" /etc/sylva-etl/sylva-config.yaml

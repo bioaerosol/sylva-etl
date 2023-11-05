@@ -21,6 +21,7 @@ parser = argparse.ArgumentParser(description="""Walks trough the incoming direct
 parser.add_argument("--incomingDir", help="absolute path of directory where files can be found that need to be stored; default is '{0}'".format(configuration.get_folders()[Folder.INCOMING.value]), action="store", required=False, default=configuration.get_folders()[Folder.INCOMING.value])
 parser.add_argument("--storageDir", help="absolute path of directory where files should be stored; default is '{0}'".format(configuration.get_folders()[Folder.STORAGE.value]), action="store", required=False, default=configuration.get_folders()[Folder.STORAGE.value])
 parser.add_argument("--trashDir", help="absolute path of directory where files should be put if they are trash; default is '{0}'".format(configuration.get_folders()[Folder.TRASH.value]), action="store", required=False, default=configuration.get_folders()[Folder.TRASH.value])
+parser.add_argument("--overrideEnabled", help="runs sylva-store if if it is disabled in configuration file", action="store_true", default=False)
 
 args = parser.parse_args()
 
@@ -29,30 +30,33 @@ data_repository = DataRepository(configuration, storage_base_path = args.storage
 process_id = str(uuid.uuid4())
 print("{0} - {1} - START - Process started.".format(datetime.now().isoformat(), process_id))
 
-for filename in glob.iglob(args.incomingDir + '/**/*.zip', recursive=True):
-     # it's a ZIP file; try to get meta information out of it by passing it to device-specific implementations
-     meta = BAA500(filename, device_repository).get_data_file_meta_data() or Poleno(filename, device_repository).get_data_file_meta_data()
+if (configuration.is_etl_enabled() == True or args.overrideEnabled == True):
+     for filename in glob.iglob(args.incomingDir + '/**/*.zip', recursive=True):
+          # it's a ZIP file; try to get meta information out of it by passing it to device-specific implementations
+          meta = BAA500(filename, device_repository).get_data_file_meta_data() or Poleno(filename, device_repository).get_data_file_meta_data()
 
-     if meta is not None:          
-          if (data_repository.has(meta) == False):
-               result_file = data_repository.store(filename, meta)
-               print("{0} - {1} - OK - File {2} stored to {3}.".format(datetime.now().isoformat(), process_id, filename, result_file))
+          if meta is not None:          
+               if (data_repository.has(meta) == False):
+                    result_file = data_repository.store(filename, meta)
+                    print("{0} - {1} - OK - File {2} stored to {3}.".format(datetime.now().isoformat(), process_id, filename, result_file))
 
-               for hook in configuration.get_hooks(meta.get_device_type()):
-                    print("{0} - {1} - INFO - Start of hook '{2}' for file {3}.".format(datetime.now().isoformat(), process_id, hook, result_file))
-                    cat = subprocess.Popen(("cat", result_file), stdout=subprocess.PIPE)
-                    output = subprocess.check_output(hook, stdin=cat.stdout, text=True)
-                    print("\t | " + output.replace("\n", "\n\t | "))
-                    cat.wait()
+                    for hook in configuration.get_hooks(meta.get_device_type()):
+                         print("{0} - {1} - INFO - Start of hook '{2}' for file {3}.".format(datetime.now().isoformat(), process_id, hook, result_file))
+                         cat = subprocess.Popen(("cat", result_file), stdout=subprocess.PIPE)
+                         output = subprocess.check_output(hook, stdin=cat.stdout, text=True)
+                         print("\t | " + output.replace("\n", "\n\t | "))
+                         cat.wait()
+
+               else:
+                    # file already stored -> move to trash
+                    result_file = data_repository.trash(filename, process_id=process_id)
+                    print("{0} - {1} - WARN - File already exists in storage. Moved file {2} to trash at {3}.".format(datetime.now().isoformat(), process_id, filename, result_file))
 
           else:
-               # file already stored -> move to trash
+               # invalid file or unknown device -> move to trash
                result_file = data_repository.trash(filename, process_id=process_id)
-               print("{0} - {1} - WARN - File already exists in storage. Moved file {2} to trash at {3}.".format(datetime.now().isoformat(), process_id, filename, result_file))
-
-     else:
-          # invalid file or unknown device -> move to trash
-          result_file = data_repository.trash(filename, process_id=process_id)
-          print("{0} - {1} - WARN - No device implementation found. Moved file {2} to trash at {3}.".format(datetime.now().isoformat(), process_id, filename, result_file))
-     
-print("{0} - {1} - END - Process ended.".format(datetime.now().isoformat(), process_id))
+               print("{0} - {1} - WARN - No device implementation found. Moved file {2} to trash at {3}.".format(datetime.now().isoformat(), process_id, filename, result_file))
+          
+     print("{0} - {1} - END - Process ended.".format(datetime.now().isoformat(), process_id))
+else:
+     print("{0} - {1} - END - Process skipped as sylva-etl is disabled.".format(datetime.now().isoformat(), process_id))

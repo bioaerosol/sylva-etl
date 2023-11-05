@@ -31,3 +31,6 @@ class Configuration():
             return self.__configuration["hooks"][device_type_name]
         else:
             return []
+        
+    def is_etl_enabled(self) -> bool:
+        return self.__configuration["sylva-etl"]["enabled"]
