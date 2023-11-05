@@ -4,7 +4,7 @@ import yaml
 class DevicesRepository:
     __configuration = []
 
-    def __init__(self, configuration_file="/etc/sylva/sylva-devices.yaml") -> None:
+    def __init__(self, configuration_file="/etc/sylva-etl/sylva-devices.yaml") -> None:
         with open(configuration_file, "r") as cf:
             self.__configuration = yaml.load(cf, Loader=yaml.FullLoader)
 

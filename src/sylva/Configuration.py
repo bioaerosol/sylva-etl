@@ -16,7 +16,7 @@ class Folder(Enum):
 class Configuration():
     __configuration = []
 
-    def __init__(self, configuration_file="/etc/sylva/sylva-config.yaml") -> None:
+    def __init__(self, configuration_file="/etc/sylva-etl/sylva-config.yaml") -> None:
         with open(configuration_file, 'r') as cf:
             self.__configuration = yaml.load(cf, Loader=yaml.FullLoader)
 
