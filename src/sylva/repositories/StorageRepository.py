@@ -1,38 +1,23 @@
-from pymongo import MongoClient
-from pymongo.collection import Collection
 import shutil
 import os
 import uuid
 from sylva.MetaData import MetaData
 
-from sylva.Configuration import DatabaseConfig, Folder
 from sylva.Configuration import Configuration
+from sylva.repositories.DatabaseRepository import DatabaseRepository
 
-class DataRepository():
+class StorageRepository(DatabaseRepository):
     client = None
     storage_base_path = None
     trash_base_path = None
 
     def __init__(self, configuration: Configuration, storage_base_path: str, trash_base_path: str) -> None:
+        super().__init__(configuration)
         self.storage_base_path = storage_base_path
         self.trash_base_path = trash_base_path
-
-        database_configuration = configuration.get_database_config()
-        
-        self.client = MongoClient(
-            database_configuration[DatabaseConfig.HOST.value], 
-            port=database_configuration[DatabaseConfig.PORT.value],
-            username = database_configuration[DatabaseConfig.USER.value],
-            password = database_configuration[DatabaseConfig.PASSWORD.value],
-            authSource = "admin"
-        )
-
-
-    def __get_storage_collection(self) -> Collection:
-        return self.client.sylva.storage
     
     def has(self, meta_data: MetaData) -> bool:
-        return self.__get_storage_collection().find_one({ "$and": meta_data.get_key_fields_array() }) is not None
+        return self.get_storage_collection().find_one({ "$and": meta_data.get_key_fields_array() }) is not None
     
     def store(self, source_file: str, meta_data: MetaData) -> str:
         # determine target
@@ -47,7 +32,7 @@ class DataRepository():
         shutil.move(source_file, storage_target_file)
 
         # put meta_data to index
-        self.__get_storage_collection().insert_one(meta_data)
+        self.get_storage_collection().insert_one(meta_data)
 
         return storage_target_file
 

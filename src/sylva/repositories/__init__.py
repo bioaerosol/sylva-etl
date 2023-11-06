@@ -1,2 +1,2 @@
 from .DevicesRepository import DevicesRepository
-from .DataRepository import DataRepository
+from .StorageRepository import StorageRepository

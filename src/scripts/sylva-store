@@ -9,7 +9,7 @@ from datetime import datetime
 from sylva import Configuration, Folder
 from sylva.devices import BAA500
 from sylva.devices.Poleno import Poleno
-from sylva.repositories import DevicesRepository, DataRepository
+from sylva.repositories import DevicesRepository, StorageRepository
 
 configuration = Configuration()
 device_repository = DevicesRepository()
@@ -25,7 +25,7 @@ parser.add_argument("--overrideEnabled", help="runs sylva-store if if it is disa
 
 args = parser.parse_args()
 
-data_repository = DataRepository(configuration, storage_base_path = args.storageDir, trash_base_path=args.trashDir)
+data_repository = StorageRepository(configuration, storage_base_path = args.storageDir, trash_base_path=args.trashDir)
 
 process_id = str(uuid.uuid4())
 print("{0} - {1} - START - Process started.".format(datetime.now().isoformat(), process_id))

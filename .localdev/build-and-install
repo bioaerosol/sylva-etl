@@ -3,3 +3,6 @@ oldPath = $(pwd)
 cd ../src
 dpkg-buildpackage -b && sudo dpkg -i ../sylva-etl_0.0.1-1_all.deb
 cd $oldPath
+
+# fine for local test env
+sudo chmod a+r /etc/sylva-etl/*
