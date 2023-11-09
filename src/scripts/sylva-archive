@@ -20,9 +20,9 @@ args = parser.parse_args()
 
 DSMC_OUTPUT_SUCCESS_PATTERN = r"^Normal File-->.*\s(.+?) \[Sent\]$"
 
-if (configuration.is_archive_enabled() == True or args.overrideEnabled == True):
-    print("{0} - START - Process started.".format(datetime.now().isoformat()))
-    
+print("{0} - START - Process started.".format(datetime.now().isoformat()))
+
+if (configuration.is_archive_enabled() == True or args.overrideEnabled == True):    
     database_repository = DatabaseRepository(configuration)
     storage_base_path = args.storageDir
     
@@ -42,9 +42,6 @@ if (configuration.is_archive_enabled() == True or args.overrideEnabled == True):
             if match:
                 filename = match.group(1)
                 if filename in files_to_archive:
-                    filename = filename[len(storage_base_path):] if filename.startswith(storage_base_path) else filename
-                    filename = filename[1:] if filename.startswith(os.path.sep) else filename
-                    print(filename)
                     files_success.append(filename) 
 
         print("\t |")
@@ -60,3 +57,6 @@ if (configuration.is_archive_enabled() == True or args.overrideEnabled == True):
             print("{0} - ERROR - Database updated only {1} of {2} record(s) of archived file(s).".format(datetime.now().isoformat(), updated_count, len(files_success)))
 
         print("{0} - END - Process ended.".format(datetime.now().isoformat()))
+        
+else:
+     print("{0} - END - Process skipped as sylva-archive is disabled.".format(datetime.now().isoformat()))
