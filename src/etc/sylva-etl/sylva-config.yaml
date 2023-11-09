@@ -1,5 +1,6 @@
 sylva-etl:
   enabled: false
+  archive-enabled: false
 database:
   host: localhost
   port: 27017

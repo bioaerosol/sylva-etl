@@ -34,3 +34,6 @@ class Configuration():
         
     def is_etl_enabled(self) -> bool:
         return self.__configuration["sylva-etl"]["enabled"]
+    
+    def is_archive_enabled(self) -> bool:
+        return self.__configuration["sylva-etl"]["archive-enabled"]

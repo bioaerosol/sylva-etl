@@ -1,0 +1,62 @@
+#!/usr/bin/env python3
+
+import os, re
+import argparse
+import subprocess
+
+from datetime import datetime
+
+from sylva import Configuration, Folder
+from sylva.repositories import DatabaseRepository
+
+configuration = Configuration()
+
+parser = argparse.ArgumentParser(description="""Walks trough the database and archives any file that is not archived yet.""")
+
+parser.add_argument("--storageDir", help="absolute path of directory where files should be stored; default is '{0}'".format(configuration.get_folders()[Folder.STORAGE.value]), action="store", required=False, default=configuration.get_folders()[Folder.STORAGE.value])
+parser.add_argument("--overrideEnabled", help="runs sylva-archive even if it is disabled in configuration file", action="store_true", default=False)
+
+args = parser.parse_args()
+
+DSMC_OUTPUT_SUCCESS_PATTERN = r"^Normal File-->.*\s(.+?) \[Sent\]$"
+
+if (configuration.is_archive_enabled() == True or args.overrideEnabled == True):
+    print("{0} - START - Process started.".format(datetime.now().isoformat()))
+    
+    database_repository = DatabaseRepository(configuration)
+    storage_base_path = args.storageDir
+    
+    metas_to_archive = database_repository.get_oldest_non_archived_meta_data()
+    files_to_archive = list(map(lambda meta: os.path.join(storage_base_path, meta.get_file_path(), meta.get_file_name()), metas_to_archive))
+    
+    print("{0} - INFO - Archiving {1} file(s) now.".format(datetime.now().isoformat(), len(files_to_archive)))
+
+    if (len(files_to_archive) > 0):
+        app = subprocess.Popen(["dsmc", "archive"] + files_to_archive, stdout=subprocess.PIPE, text=True, universal_newlines=True)
+        files_success = []
+        
+        print("\t |")
+        for line in app.stdout:
+            print("\t | " + line.replace("\n", ""))
+            match = re.match(DSMC_OUTPUT_SUCCESS_PATTERN, line)
+            if match:
+                filename = match.group(1)
+                if filename in files_to_archive:
+                    filename = filename[len(storage_base_path):] if filename.startswith(storage_base_path) else filename
+                    filename = filename[1:] if filename.startswith(os.path.sep) else filename
+                    print(filename)
+                    files_success.append(filename) 
+
+        print("\t |")
+        if (len(files_success) == len(files_to_archive)):
+            print("{0} - INFO - {1} of {2} file(s) archived successfully.".format(datetime.now().isoformat(), len(files_success), len(files_to_archive)))
+        else:
+            print("{0} - ERROR - Only {1} of {2} file(s) archived.".format(datetime.now().isoformat(), len(files_success), len(files_to_archive)))
+
+        updated_count = database_repository.set_archived_by_files(files_success)
+        if (updated_count == len(files_success)):
+            print("{0} - INFO - Database records of archived files updated successfully.".format(datetime.now().isoformat()))
+        else:
+            print("{0} - ERROR - Database updated only {1} of {2} record(s) of archived file(s).".format(datetime.now().isoformat(), updated_count, len(files_success)))
+
+        print("{0} - END - Process ended.".format(datetime.now().isoformat()))

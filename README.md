@@ -40,7 +40,8 @@ The package is configured in two YAML files in /etc/sylva:
 ## Package Configuration
 | Key | Description |
 | --- | --- |
-| sylva-etl.enabled | Set to true to run ETL automatically |
+| sylva-etl.enabled | Set to true to run sylva-store automatically |
+| sylva-etl.archive-enabled | Set to true to run sylva-archive automatically |
 | database.host | Host of MongoDB |
 | database.port | Port of MongoDB |
 | database.user | User to access MongoDB |
