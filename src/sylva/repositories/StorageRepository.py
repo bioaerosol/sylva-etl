@@ -17,11 +17,14 @@ class StorageRepository(DatabaseRepository):
         self.trash_base_path = trash_base_path
     
     def has(self, meta_data: MetaData) -> bool:
-        return self.get_storage_collection().find_one({ "$and": meta_data.get_key_fields_array() }) is not None
-    
+        return self.get_storage_collection().find_one({"$and": meta_data.get_key_fields_array()}) is not None
+
+    def has_file(self, file_path: str, file_name: str) -> bool:
+        return self.get_storage_collection().find_one({"filePath": file_path, "fileName": file_name}) is not None
+
     def store(self, source_file: str, meta_data: MetaData) -> str:
         # determine target
-        storage_target_path = self.__get_storage_path(meta_data)
+        storage_target_path = self.get_storage_path(meta_data)
         storage_target_file = os.path.join(storage_target_path, os.path.basename(source_file))
 
         # update meta_data with target
@@ -47,6 +50,5 @@ class StorageRepository(DatabaseRepository):
 
         return trash_target_file
     
-    def __get_storage_path(self, meta_data: MetaData):
+    def get_storage_path(self, meta_data: MetaData):
         return os.path.join(self.storage_base_path, meta_data["deviceLocation"], meta_data.get_device_type(), meta_data.get_start().strftime("%Y"), meta_data.get_start().strftime("%m"), meta_data.get_start().strftime("%d"))
-
