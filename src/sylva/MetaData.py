@@ -12,12 +12,13 @@ class MetaData(dict):
             file_path=input["filePath"],
             file_name=input["fileName"],
             file_hash=input["fileHash"],
+            file_size=input["fileSize"],
             is_archived=input["isArchived"],
             created_on=input["createdOn"],
             archive_on=input["archivedOn"],
         )
 
-    def __init__(self, start: datetime, end: datetime, deviceLocation: str, file_name: str, file_hash: str, device_type: str, is_archived: bool = False, created_on: datetime = datetime.now(timezone.utc), archive_on: datetime = None, file_path: str = None):
+    def __init__(self, start: datetime, end: datetime, deviceLocation: str, file_name: str, file_hash: str, file_size: int, device_type: str, is_archived: bool = False, created_on: datetime = datetime.now(timezone.utc), archive_on: datetime = None, file_path: str = None):
         super().__init__()
         self["start"] = start
         self["end"] = end
@@ -26,6 +27,7 @@ class MetaData(dict):
         self["filePath"] = file_path
         self["fileName"] = file_name
         self["fileHash"] = file_hash
+        self["fileSize"] = file_size
         self["isArchived"] = is_archived
         self["createdOn"] = created_on
         self["archivedOn"] = archive_on
@@ -53,6 +55,9 @@ class MetaData(dict):
 
     def get_file_hash(self) -> str:
         return self.get("fileHash")
+    
+    def get_file_size(self) -> int:
+        return self.get("fileSize")
 
     def get_device_type(self) -> str:
         return self.get("deviceType")

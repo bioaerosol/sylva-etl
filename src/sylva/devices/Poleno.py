@@ -43,7 +43,8 @@ class Poleno(Device):
                 file_hash=super().get_file_hash(),
                 file_name=os.path.basename(self.file),
                 device_type=self.get_device_type(),
-                deviceLocation=self.get_location(device_id)
+                deviceLocation=self.get_location(device_id),
+                file_size=os.path.getsize(self.file)
             )
         
         else:

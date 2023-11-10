@@ -44,7 +44,8 @@ class BAA500(Device):
                 file_hash=super().get_file_hash(),
                 file_name=os.path.basename(self.file),
                 device_type=self.get_device_type(),
-                deviceLocation=self.get_location(device_id.text)
+                deviceLocation=self.get_location(device_id.text),
+                file_size=os.path.getsize(self.file)
             )
         else:
             return None
