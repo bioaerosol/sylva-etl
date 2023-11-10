@@ -24,6 +24,17 @@ if [ ! -z "$(ls -A /home/sylva/incoming)" ]; then
     exit 1
 fi
 
+# same file with different hash code should lead to trash 
+cp testdata/baa500.otherhash incoming/baa500.zip
+
+sylva-store
+
+if [ ! -n "$(find "/home/sylva/trash" -type f -name "*-baa500.zip")" ]; then 
+    echo "File expected in trash is not there."
+    exit 1
+fi
+
+
 # duplicate file
 cp testdata/poleno.zip incoming/poleno-duplicate.zip
 sylva-store
