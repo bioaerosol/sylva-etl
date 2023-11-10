@@ -1,7 +1,8 @@
 #!/bin/bash
 oldPath = $(pwd)
 cd ../src
-dpkg-buildpackage -b && sudo dpkg -i ../sylva-etl_0.0.1-1_all.deb
+rm ../sylva-etl_*_all.deb
+dpkg-buildpackage -b && sudo dpkg -i ../sylva-etl_*_all.deb
 cd $oldPath
 
 # fine for local test env
