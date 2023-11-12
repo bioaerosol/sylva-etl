@@ -1,1 +1,2 @@
-*/5 * * * *  sylva   flock -n /var/lock/sylva-etl-store -c "sylva-store" 1>> /var/log/sylva-etl/sylva-store.log 2>> /var/log/sylva-etl/sylva-store-error.log
+*/7 * * * *  sylva   flock -n /var/lock/sylva-etl -c "sylva-store" 1>> /var/log/sylva-etl/sylva-store.log 2>> /var/log/sylva-etl/sylva-store-error.log
+*/13 * * * *  sylva   flock -n /var/lock/sylva-etl -c "sylva-archive" 1>> /var/log/sylva-etl/sylva-archive.log 2>> /var/log/sylva-etl/sylva-archive-error.log
