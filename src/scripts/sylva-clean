@@ -1,53 +1,57 @@
 #!/usr/bin/env python3
 
-import os, re
+import os
 import argparse
-import subprocess
 
 from datetime import datetime, timedelta
 
-from sylva import Configuration, Folder
+from sylva import Configuration
 from sylva.repositories import DatabaseRepository, ArchiveRepository
 
 configuration = Configuration()
 
-parser = argparse.ArgumentParser(description="""Walks trough the storage and cleans files that contain data that is older than given days and that have been archived successfully. This action is limited to 20 files per run starting with oldest data.""")
+parser = argparse.ArgumentParser(
+    description="""Walks trough the storage and cleans files that contain data that is older than given days and that have been archived successfully. 
+                   A double-check in archive is done to make sure that this file with the expected file size is stored in archive before deleting it.
+                   This action is limited to 20 files per run starting with oldest data. To determine a file as "older than" the content of the file
+                   is relevant, not the file timestamp in file system."""
+)
 
-parser.add_argument("--storageDir", help="absolute path of directory where files should be stored; default is '{0}'".format(configuration.get_folders()[Folder.STORAGE.value]), action="store", required=False, default=configuration.get_folders()[Folder.STORAGE.value])
 parser.add_argument("--olderThan", help="clean files which data is older than this value (days); default is '{0}'".format(configuration.get_clean_older_than_days()), action="store", required=False, default=configuration.get_clean_older_than_days())
 parser.add_argument("--overrideEnabled", help="runs sylva-archive even if it is disabled in configuration file", action="store_true", default=False)
 parser.add_argument("--dryRun", help="if set no persistent action will be performed", action="store_true", default=False)
 
-
 args = parser.parse_args()
 
+
 print("{0} - START - Process started.".format(datetime.now().isoformat()))
-if (args.dryRun):
-    print("{0} - INFO - Dry run. Won't delete anything.".format(datetime.now().isoformat()))
+if args.dryRun:
+    print("{0} - INFO - Dry run. Won't delete anything. Be relaxed.".format(datetime.now().isoformat()))
 
-if (configuration.is_clean_enabled() == True or args.overrideEnabled == True):
-    days_ago = datetime.utcnow() - timedelta(days=int(args.olderThan))
-
+if configuration.is_clean_enabled() == True or args.overrideEnabled == True:
     database_repository = DatabaseRepository(configuration)
     archive_repository = ArchiveRepository()
-    storage_base_path = args.storageDir
-    
+
+    days_ago = datetime.utcnow() - timedelta(days=int(args.olderThan))
     metas_to_clean = database_repository.get_in_storage_archived_meta_data_older_than(days_ago)
 
     for meta in metas_to_clean:
         file_to_delete = meta.get_full_file_with_path()
 
-        if (archive_repository.has_in_archive(meta)):
+        if archive_repository.has_in_archive(meta):
             print("{0} - INFO - Going to delete {1}.".format(datetime.now().isoformat(), file_to_delete))
 
-            if (args.dryRun == False):
+            if args.dryRun == False:
                 os.remove(file_to_delete)
                 db_sucess = database_repository.set_out_of_storage_for_file(file_to_delete)
 
-                if (db_sucess == False):
+                if db_sucess == False:
                     print("{0} - ERROR - Could not update database record for file {1}.".format(datetime.now().isoformat(), file_to_delete))
 
         else:
-            print("{0} - ERROR - File {1} expected in archive but not found.".format(datetime.now().isoformat(), file_to_delete))
+            print("{0} - ERROR - File {1} expected in archive but not found with its path and size of {2} bytes.".format(datetime.now().isoformat(), file_to_delete, meta.get_file_size()))
+
+    print("{0} - END - Process ended.".format(datetime.now().isoformat()))
+
 else:
     print("{0} - END - Process skipped as sylva-clean is disabled.".format(datetime.now().isoformat()))
