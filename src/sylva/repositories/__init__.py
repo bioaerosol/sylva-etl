@@ -1,3 +1,4 @@
 from .DevicesRepository import DevicesRepository
 from .StorageRepository import StorageRepository
 from .DatabaseRepository import DatabaseRepository
+from .ArchiveRepository import ArchiveRepository

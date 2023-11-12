@@ -1,6 +1,9 @@
 sylva-etl:
   enabled: false
   archive-enabled: false
+  clean-enabled: false
+clean:
+  clean-older-than-days: 60
 database:
   host: localhost
   port: 27017

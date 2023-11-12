@@ -11,7 +11,7 @@ from sylva.repositories import DatabaseRepository
 
 configuration = Configuration()
 
-parser = argparse.ArgumentParser(description="""Walks trough the database and archives any file that is not archived yet.""")
+parser = argparse.ArgumentParser(description="""Walks trough the database and archives any file that is not archived yet. This action is limited to 20 files per run.""")
 
 parser.add_argument("--storageDir", help="absolute path of directory where files should be stored; default is '{0}'".format(configuration.get_folders()[Folder.STORAGE.value]), action="store", required=False, default=configuration.get_folders()[Folder.STORAGE.value])
 parser.add_argument("--overrideEnabled", help="runs sylva-archive even if it is disabled in configuration file", action="store_true", default=False)

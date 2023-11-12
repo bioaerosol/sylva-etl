@@ -37,3 +37,9 @@ class Configuration():
     
     def is_archive_enabled(self) -> bool:
         return self.__configuration["sylva-etl"]["archive-enabled"]
+    
+    def is_clean_enabled(self) -> bool:
+        return self.__configuration["sylva-etl"]["clean-enabled"]
+    
+    def get_clean_older_than_days(self) -> int:
+        return self.__configuration["clean"]["clean-older-than-days"]

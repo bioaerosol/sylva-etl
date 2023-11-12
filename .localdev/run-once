@@ -1,6 +1,9 @@
 #!/bin/bash
 
 path=testpath
+
+rm $path -r
+
 mkdir $path
 mkdir $path/incoming
 mkdir $path/storage
@@ -8,14 +11,12 @@ mkdir $path/trash
 
 cp ../test/testdata/*.zip $path/incoming/
 
-sylva-store --incomingDir $path/incoming --storageDir $path/storage --trashDir $path/trash
+sylva-store --incomingDir "$( realpath $path/incoming )" --storageDir "$( realpath $path/storage )" --trashDir "$( realpath $path/trash )"
 
 # same file name with different hash
 cp ../test/testdata/baa500.otherhash $path/incoming/baa500.zip
-sylva-store --incomingDir $path/incoming --storageDir $path/storage --trashDir $path/trash
+sylva-store --incomingDir "$( realpath $path/incoming )" --storageDir "$( realpath $path/storage )" --trashDir "$( realpath $path/trash )"
 
 # duplicate
 cp ../test/testdata/poleno.zip $path/incoming/poleno-duplicate.zip
-sylva-store --incomingDir $path/incoming --storageDir $path/storage --trashDir $path/trash
-
-rm $path -r
+sylva-store --incomingDir "$( realpath $path/incoming )" --storageDir "$( realpath $path/storage )" --trashDir "$( realpath $path/trash )"
