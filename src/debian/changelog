@@ -1,8 +1,10 @@
-sylva-etl (0.0.1-1ubuntu1) UNRELEASED; urgency=medium
+sylva-etl (0.0.1-1ubuntu2) UNRELEASED; urgency=medium
 
+  [ Robert Gebauer ]
   * Added archiving capability.
+  * several bugfixes
 
- -- Robert Gebauer <robert.gebauer@gmx.de>  Thu, 09 Nov 2023 20:23:45 +0100
+ -- Robert Gebauer <robert.gebauer@gmx.de>  Sun, 12 Nov 2023 11:45:29 +0100
 
 sylva-etl (0.0.1-1) UNRELASED; urgency=low
 
