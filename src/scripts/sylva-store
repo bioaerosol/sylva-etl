@@ -15,8 +15,8 @@ configuration = Configuration()
 device_repository = DevicesRepository()
 
 parser = argparse.ArgumentParser(description="""Walks trough the incoming directory and puts each file from "incomingDir" 
-                                                to SYLVA "storageDir". If there is a faulty or already existing file, it 
-                                                will be moved to "trashDir".""")
+                                                to storage. If there is a faulty or already existing file, it will be moved 
+                                                to "trashDir".""")
 
 parser.add_argument("--incomingDir", help="absolute path of directory where files can be found that need to be stored; default is '{0}'".format(configuration.get_folders()[Folder.INCOMING.value]), action="store", required=False, default=configuration.get_folders()[Folder.INCOMING.value])
 parser.add_argument("--storageDir", help="absolute path of directory where files should be stored; default is '{0}'".format(configuration.get_folders()[Folder.STORAGE.value]), action="store", required=False, default=configuration.get_folders()[Folder.STORAGE.value])
@@ -25,7 +25,7 @@ parser.add_argument("--overrideEnabled", help="runs sylva-store if if it is disa
 
 args = parser.parse_args()
 
-data_repository = StorageRepository(configuration, storage_base_path = args.storageDir, trash_base_path=args.trashDir)
+storage_repository = StorageRepository(configuration, storage_base_path = args.storageDir, trash_base_path=args.trashDir)
 
 process_id = str(uuid.uuid4())
 print("{0} - {1} - START - Process started.".format(datetime.now().isoformat(), process_id))
@@ -36,9 +36,9 @@ if (configuration.is_etl_enabled() == True or args.overrideEnabled == True):
           meta = BAA500(filename, device_repository).get_data_file_meta_data() or Poleno(filename, device_repository).get_data_file_meta_data()
 
           if meta is not None:          
-               if (data_repository.has(meta) == False):
-                    if (data_repository.has_file(data_repository.get_storage_path(meta), meta.get_file_name()) == False):
-                         result_file = data_repository.store(filename, meta)
+               if (storage_repository.has(meta) == False):
+                    if (storage_repository.has_file(storage_repository.get_storage_path(meta), meta.get_file_name()) == False):
+                         result_file = storage_repository.store(filename, meta)
                          print("{0} - {1} - OK - File {2} stored to {3}.".format(datetime.now().isoformat(), process_id, filename, result_file))
 
                          for hook in configuration.get_hooks(meta.get_device_type()):
@@ -49,17 +49,17 @@ if (configuration.is_etl_enabled() == True or args.overrideEnabled == True):
                               cat.wait()
                     else:
                          # file already stored with different meta -> move to trash
-                         result_file = data_repository.trash(filename, process_id=process_id)
+                         result_file = storage_repository.trash(filename, process_id=process_id)
                          print("{0} - {1} - ERROR - File's meta data does not fit to existing file. Moved file {2} to trash at {3}.".format(datetime.now().isoformat(), process_id, filename, result_file))
 
                else:
                     # file already stored -> move to trash
-                    result_file = data_repository.trash(filename, process_id=process_id)
+                    result_file = storage_repository.trash(filename, process_id=process_id)
                     print("{0} - {1} - WARN - File already exists in storage. Moved file {2} to trash at {3}.".format(datetime.now().isoformat(), process_id, filename, result_file))
 
           else:
                # invalid file or unknown device -> move to trash
-               result_file = data_repository.trash(filename, process_id=process_id)
+               result_file = storage_repository.trash(filename, process_id=process_id)
                print("{0} - {1} - WARN - No device implementation found. Moved file {2} to trash at {3}.".format(datetime.now().isoformat(), process_id, filename, result_file))
           
      print("{0} - {1} - END - Process ended.".format(datetime.now().isoformat(), process_id))
