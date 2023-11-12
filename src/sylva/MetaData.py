@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-
+import os
 
 class MetaData(dict):
     @staticmethod
@@ -16,9 +16,10 @@ class MetaData(dict):
             is_archived=input["isArchived"],
             created_on=input["createdOn"],
             archive_on=input["archivedOn"],
+            is_in_storage=input["isInStorage"]
         )
 
-    def __init__(self, start: datetime, end: datetime, deviceLocation: str, file_name: str, file_hash: str, file_size: int, device_type: str, is_archived: bool = False, created_on: datetime = datetime.now(timezone.utc), archive_on: datetime = None, file_path: str = None):
+    def __init__(self, start: datetime, end: datetime, deviceLocation: str, file_name: str, file_hash: str, file_size: int, device_type: str, is_archived: bool = False, created_on: datetime = datetime.now(timezone.utc), archive_on: datetime = None, file_path: str = None, is_in_storage: bool = True):
         super().__init__()
         self["start"] = start
         self["end"] = end
@@ -31,6 +32,7 @@ class MetaData(dict):
         self["isArchived"] = is_archived
         self["createdOn"] = created_on
         self["archivedOn"] = archive_on
+        self["isInStorage"] = is_in_storage
 
     def set_file_path(self, path) -> None:
         self["filePath"] = path
@@ -64,3 +66,9 @@ class MetaData(dict):
 
     def get_is_archived(self) -> bool:
         return self.get("isArchived")
+    
+    def get_is_in_storage(self) -> bool:
+        return self.get("isInStorage")
+    
+    def get_full_file_with_path(self):
+        return os.path.join(self.get_file_path(), self.get_file_name())

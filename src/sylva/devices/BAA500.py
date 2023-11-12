@@ -45,7 +45,8 @@ class BAA500(Device):
                 file_name=os.path.basename(self.file),
                 device_type=self.get_device_type(),
                 deviceLocation=self.get_location(device_id.text),
-                file_size=os.path.getsize(self.file)
+                file_size=os.path.getsize(self.file),
+                is_in_storage=True
             )
         else:
             return None
