@@ -1,4 +1,4 @@
-/var/log/sylva/sylva.log {
+/var/log/sylva-etl/sylva-*.log {
   weekly
   missingok
   rotate 250
