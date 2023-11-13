@@ -1,5 +1,21 @@
 [![Test Debian Package](https://github.com/bioaerosol/sylva-etl/actions/workflows/test-debian-package.yml/badge.svg)](https://github.com/bioaerosol/sylva-etl/actions/workflows/test-debian-package.yml)
 
+# Overview
+SYLVA ETL is a debian package that provides tools to perform the SYLVA data flow. There are two types of storages:
+
+1. Storage – Disk storage for fast access. Holds raw data files of last n days and raw data files that have been made accessible from archive upon request.
+
+2. Archive – Tape archive for long-term storage. Holds all raw data files.
+
+Three command are provided that will be called automtically but also can be used manually:
+1. ```sylva-store``` – Copies raw data files from incoming directory to storage. If configured, hooks will be called for each processed file. This mechanism provides the capability to do device type specific processing after a file has been put to storage. If a hook is configured the file will be put to hook’s STDIN. Calling the hook is a one-shot and output will be logged.
+
+2. ```sylva-archive``` – Archives files from storage to tape archive.
+
+3. ```sylva-clean``` – Clean storage by removing files that contain data older than n days (default: 60 days) if they have been put to archive sucessfully.
+
+For help please refer to ```COMMAND --help```, e.g. ```sylva-store --help```.
+
 # Installation
 ## MongoDB
 This package uses a MongoDB which access data is to be configured in /etc/sylva/sylva-config.yaml.
@@ -42,6 +58,8 @@ The package is configured in two YAML files in /etc/sylva:
 | --- | --- |
 | sylva-etl.enabled | Set to true to run sylva-store automatically |
 | sylva-etl.archive-enabled | Set to true to run sylva-archive automatically |
+| sylva-etl.clean-enabled | Set to true to run sylva-clean automatically |
+| clean.clean-older-than-days | Data will be cleaned if it is older than this value (days) |
 | database.host | Host of MongoDB |
 | database.port | Port of MongoDB |
 | database.user | User to access MongoDB |
@@ -49,10 +67,16 @@ The package is configured in two YAML files in /etc/sylva:
 | folders.incoming | Path to incoming folder |
 | folders.storage | Path to storage folder |
 | folders.trash | Path to trash folder |
-| hooks.[monitorType] | List of hooks to bve applied for files from monitors of mentioned type. |
+| hooks.[monitorType] | List of hooks to bve applied for files from monitors of mentioned type |
 
 Example with default values:
 ```yaml
+sylva-etl:
+  enabled: false
+  archive-enabled: false
+  clean-enabled: false
+clean:
+  clean-older-than-days: 60
 database:
   host: localhost
   port: 27017
@@ -63,8 +87,6 @@ folders:
   storage: /home/sylva/storage
   trash: /home/sylva/trash
 hooks:
-  Poleno:
-  - md5sum
 ```
 ## Device Configuration
 | Key | Description |
@@ -78,7 +100,7 @@ hooks:
 Example with some random values:
 ```yaml
 locations:
-- name: Schneefernerhaus
+- name: DEUFS
   devices:
     Poleno:
       - "poleno-1"
