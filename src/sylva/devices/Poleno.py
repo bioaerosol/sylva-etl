@@ -13,7 +13,7 @@ class Poleno(Device):
     """Actual implementation for Swisens Poleno."""
 
     DEVICE_TYPE = DeviceType.Poleno.value
-    CONTENT_JSON_FILE_PATTERN = re.compile(r".*\/.*_.*_ev\.json")
+    CONTENT_JSON_FILE_PATTERN = re.compile(r".*_.*_ev\.json")
     POLENO_TIME_ZONE = "Europe/Berlin"
 
     @staticmethod
