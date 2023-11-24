@@ -18,12 +18,20 @@ class DatabaseRepository:
 
         self.client = MongoClient(database_configuration[DatabaseConfig.HOST.value], port=database_configuration[DatabaseConfig.PORT.value], username=database_configuration[DatabaseConfig.USER.value], password=database_configuration[DatabaseConfig.PASSWORD.value], authSource="admin", tz_aware=True)
 
+    def update_by_storage_file(self, file, meta_data: MetaData) -> (bool, bool):
+        path_seg = os.path.dirname(file)
+        file_name_seg = os.path.basename(file)
+
+        result = self.get_storage_collection().update_one({"fileName": file_name_seg, "filePath": path_seg}, {"$set": meta_data.get_key_fields()})
+
+        return (result.matched_count == True, result.modified_count == True)
+
     def get_storage_collection(self) -> Collection:
         return self.client.sylva.storage
 
     def get_oldest_non_archived_meta_data(self, limit: int = 20) -> typing.List[MetaData]:
         return list(map(lambda x: MetaData.from_dict(x), self.get_storage_collection().aggregate([{"$match": {"isArchived": False}}, {"$sort": {"end": 1}}, {"$limit": limit}])))
-    
+
     def get_in_storage_archived_meta_data_older_than(self, older_than: datetime, limit: int = 20) -> typing.Iterator[MetaData]:
         return map(lambda x: MetaData.from_dict(x), self.get_storage_collection().aggregate([{"$match": {"isInStorage": True, "isArchived": True, "end": {"$lt": older_than}}}, {"$sort": {"end": 1}}, {"$limit": limit}]))
 
@@ -31,7 +39,7 @@ class DatabaseRepository:
         path_seg = os.path.dirname(file)
         file_name_seg = os.path.basename(file)
 
-        update_result = self.get_storage_collection().update_one({"fileName": file_name_seg, "filePath": path_seg}, { "$set": { "isInStorage": False } })
+        update_result = self.get_storage_collection().update_one({"fileName": file_name_seg, "filePath": path_seg}, {"$set": {"isInStorage": False}})
 
         return update_result.modified_count == 1
 
@@ -42,7 +50,7 @@ class DatabaseRepository:
             path_seg = os.path.dirname(file)
             file_name_seg = os.path.basename(file)
 
-            update_result = self.get_storage_collection().update_one({"fileName": file_name_seg, "filePath": path_seg}, { "$set": { "isArchived": True, "archivedOn": datetime.now(timezone.utc)} })
+            update_result = self.get_storage_collection().update_one({"fileName": file_name_seg, "filePath": path_seg}, {"$set": {"isArchived": True, "archivedOn": datetime.now(timezone.utc)}})
             modified_count += update_result.modified_count
 
         return modified_count

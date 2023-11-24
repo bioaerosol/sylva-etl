@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 import os
 
+
 class MetaData(dict):
     @staticmethod
     def from_dict(input):
@@ -16,7 +17,7 @@ class MetaData(dict):
             is_archived=input["isArchived"],
             created_on=input["createdOn"],
             archive_on=input["archivedOn"],
-            is_in_storage=input["isInStorage"]
+            is_in_storage=input["isInStorage"],
         )
 
     def __init__(self, start: datetime, end: datetime, deviceLocation: str, file_name: str, file_hash: str, file_size: int, device_type: str, is_archived: bool = False, created_on: datetime = datetime.now(timezone.utc), archive_on: datetime = None, file_path: str = None, is_in_storage: bool = True):
@@ -38,7 +39,10 @@ class MetaData(dict):
         self["filePath"] = path
 
     def get_key_fields_array(self):
-        return [{"start": self.get("start")}, {"end": self.get("end")}, {"deviceLocation": self.get("deviceLocation")}, {"fileHash": self.get("fileHash")}, {"deviceType": self.get("deviceType")}]
+        return [{"start": self.get("start")}, {"end": self.get("end")}, {"deviceLocation": self.get("deviceLocation")}, {"fileHash": self.get("fileHash")}, {"fileSize": self.get("fileSize")}, {"deviceType": self.get("deviceType")}]
+
+    def get_key_fields(self):
+        return {"start": self.get("start"), "end": self.get("end"), "deviceLocation": self.get("deviceLocation"), "fileHash": self.get("fileHash"), "fileSize": self.get("fileSize"), "deviceType": self.get("deviceType")}
 
     def get_start(self) -> datetime:
         return self.get("start")
@@ -57,7 +61,7 @@ class MetaData(dict):
 
     def get_file_hash(self) -> str:
         return self.get("fileHash")
-    
+
     def get_file_size(self) -> int:
         return self.get("fileSize")
 
@@ -66,9 +70,9 @@ class MetaData(dict):
 
     def get_is_archived(self) -> bool:
         return self.get("isArchived")
-    
+
     def get_is_in_storage(self) -> bool:
         return self.get("isInStorage")
-    
+
     def get_full_file_with_path(self):
         return os.path.join(self.get_file_path(), self.get_file_name())
