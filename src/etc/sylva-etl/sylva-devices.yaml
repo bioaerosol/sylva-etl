@@ -1,7 +1,9 @@
 locations:
-- name: Schneefernerhaus
+- name: DEUFS-BAA500-1
   devices:
     BAA500:
       - "00013"
+- name: DEUFS-JUPITER-1
+  devices:
     Poleno:
       -  "poleno-3"

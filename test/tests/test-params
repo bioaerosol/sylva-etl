@@ -12,12 +12,12 @@ cp testdata/poleno.zip foo_incoming
 
 sylva-store --incomingDir /home/sylva/foo_incoming --storageDir /home/sylva/foo_storage --trashDir /home/sylva/foo_trash --overrideEnabled
 
-if [ ! -f "/home/sylva/foo_storage/Schneefernerhaus/Poleno/2023/09/18/poleno.zip" ]; then
+if [ ! -f "/home/sylva/foo_storage/DEUFS-JUPITER-1/2023/09/18/poleno.zip" ]; then
     echo "File poleno.zip not at expected place."
     exit 1
 fi
 
-if [ ! -f "/home/sylva/foo_storage/Schneefernerhaus/BAA500/2020/02/22/baa500.zip" ]; then
+if [ ! -f "/home/sylva/foo_storage/DEUFS-BAA500-1/2020/02/22/baa500.zip" ]; then
     echo "File baa500.zip not at expected place."
     exit 1
 fi

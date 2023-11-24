@@ -52,4 +52,4 @@ class StorageRepository(DatabaseRepository):
         return trash_target_file
 
     def get_storage_path(self, meta_data: MetaData):
-        return os.path.join(self.storage_base_path, meta_data["deviceLocation"], meta_data.get_device_type(), meta_data.get_start().strftime("%Y"), meta_data.get_start().strftime("%m"), meta_data.get_start().strftime("%d"))
+        return os.path.join(self.storage_base_path, meta_data["deviceLocation"], meta_data.get_start().strftime("%Y"), meta_data.get_start().strftime("%m"), meta_data.get_start().strftime("%d"))
