@@ -1,4 +1,4 @@
-[![Test Debian Package](https://github.com/bioaerosol/sylva-etl/actions/workflows/test-debian-package.yml/badge.svg)](https://github.com/bioaerosol/sylva-etl/actions/workflows/test-debian-package.yml)
+[![Test Debian Package](https://github.com/bioaerosol/sylva-etl/actions/workflows/test-debian-package.yml/badge.svg)](https://github.com/bioaerosol/sylva-etl/actions/workflows/test-debian-package.yml)  [![Release Debian Package](https://github.com/bioaerosol/sylva-etl/actions/workflows/release-debian-package.yml/badge.svg)](https://github.com/bioaerosol/sylva-etl/actions/workflows/release-debian-package.yml)
 
 # Overview
 SYLVA ETL is a debian package that provides tools to perform the SYLVA data flow. There are two types of storages:
