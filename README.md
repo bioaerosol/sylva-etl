@@ -67,7 +67,6 @@ The package is configured in two YAML files in /etc/sylva:
 | folders.incoming | Path to incoming folder |
 | folders.storage | Path to storage folder |
 | folders.trash | Path to trash folder |
-| hooks.[monitorType] | List of hooks to bve applied for files from monitors of mentioned type |
 
 Example with default values:
 ```yaml
@@ -93,6 +92,7 @@ hooks:
 | --- | --- |
 | locations | Array of locations where devices are installed |
 | locations[n].name | Name of the location. |
+| locations[n].hooks | List of hooks to be applied for files of this location. |
 | locations[n].devices | Array of devices installed at this location |
 | locations[n].devices[n].BAA500 | Array of BAA500 devces installed at this location. Array contains entries of type string that refer to the ID of the devices installed at this location. |
 | locations[n].devices[n].Poleno | Array of Poleno devces installed at this location. Array contains entries of type string that refer to the ID of the devices installed at this location. |
@@ -104,8 +104,7 @@ locations:
   devices:
     Poleno:
       - "poleno-1"
-      - "poleno-2"
-    BAA500:
-      - "00013"
+  hooks:
+    - date
 ```
 

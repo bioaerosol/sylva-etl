@@ -18,3 +18,10 @@ class DevicesRepository:
                     pass
 
         raise ValueError("Cannot find device location for type {0} and id {1}.".format(device_type, device_id))
+    
+    def get_hooks_for(self, device_location: str) -> list:
+        for location in self.__configuration["locations"]:
+            if location["name"] == device_location:                
+                return location["hooks"] or [] if "hooks" in location else []
+
+        return []
