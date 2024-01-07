@@ -1,4 +1,4 @@
-sylva-etl (0.0.1-1ubuntu7) UNRELEASED; urgency=medium
+sylva-etl (0.0.1-1ubuntu8) UNRELEASED; urgency=medium
 
   [ Robert Gebauer ]
   * Converted storage layout to naming conventions.
@@ -6,9 +6,9 @@ sylva-etl (0.0.1-1ubuntu7) UNRELEASED; urgency=medium
   * Added clean capabilities.
   * Added archiving capability.
   * several bugfixes
-  * Moved hooks to location instead of device type. 
+  * Moved hooks to location instead of device type and call it with file as parameter
 
- -- Robert Gebauer <robert.gebauer@gmx.de>  Tue, 02 Jan 2024 11:49:12 +0100
+ -- Robert Gebauer <robert.gebauer@gmx.de>  Sun, 07 Jan 2024 08:37:37 +0100
 
 sylva-etl (0.0.1-1) UNRELASED; urgency=low
 
