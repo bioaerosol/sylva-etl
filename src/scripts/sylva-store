@@ -49,18 +49,18 @@ if (configuration.is_etl_enabled() == True or args.overrideEnabled == True):
                               cat.wait()
                     else:
                          # file already stored with different meta -> move to trash
-                         result_file = storage_repository.trash(filename, process_id=process_id)
+                         result_file = storage_repository.trash(filename, process_id=process_id, reason="META_ERROR")
                          print("{0} - {1} - ERROR - File's meta data does not fit to existing file. Moved file {2} to trash at {3}.".format(datetime.now().isoformat(), process_id, filename, result_file))
 
                else:
                     # file already stored -> move to trash
-                    result_file = storage_repository.trash(filename, process_id=process_id)
+                    result_file = storage_repository.trash(filename, process_id=process_id, reason="DUPLICATE")
                     print("{0} - {1} - WARN - File already exists in storage. Moved file {2} to trash at {3}.".format(datetime.now().isoformat(), process_id, filename, result_file))
 
           else:
                # invalid file or unknown device -> move to trash
-               result_file = storage_repository.trash(filename, process_id=process_id)
-               print("{0} - {1} - WARN - No device implementation found. Moved file {2} to trash at {3}.".format(datetime.now().isoformat(), process_id, filename, result_file))
+               result_file = storage_repository.trash(filename, process_id=process_id, reason="UNKNOWN_DEVICE")
+               print("{0} - {1} - ERROR - No device implementation found. Moved file {2} to trash at {3}.".format(datetime.now().isoformat(), process_id, filename, result_file))
           
      print("{0} - {1} - END - Process ended.".format(datetime.now().isoformat(), process_id))
 else:

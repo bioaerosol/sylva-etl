@@ -40,10 +40,10 @@ class StorageRepository(DatabaseRepository):
 
         return storage_target_file
 
-    def trash(self, source_file: str, process_id: str) -> str:
+    def trash(self, source_file: str, process_id: str, reason: str = "undefined") -> str:
         # determine target
         trash_target_path = os.path.join(self.trash_base_path, process_id)
-        trash_target_file = os.path.join(trash_target_path, str(uuid.uuid4()) + "-" + os.path.basename(source_file))
+        trash_target_file = os.path.join(trash_target_path, str(uuid.uuid4()) + "-" + reason + "-" + os.path.basename(source_file))
 
         # file system operations
         os.makedirs(trash_target_path, exist_ok=True)
