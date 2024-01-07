@@ -6,4 +6,3 @@
 
     use sylva
     db.storage.deleteMany({})
-    
