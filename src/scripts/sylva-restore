@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+
+
+import os
+import argparse
+
+from datetime import datetime
+
+from sylva import Configuration, Folder
+from sylva.repositories import DatabaseRepository, ArchiveRepository
+
+configuration = Configuration()
+
+parser = argparse.ArgumentParser(description="""Restore files from the archive to the storage directory.""")
+parser.add_argument('indices', nargs='+', help='IDs from database index of objects to be restored')
+
+args = parser.parse_args()
+
+database_repository = DatabaseRepository(configuration)
+archive_repository = ArchiveRepository()
+
+files_to_retrieve = database_repository.get_file_names_by_ids(args.indices, in_storage=False)
+
+if (files_to_retrieve is None):
+    print("{0} - ERROR - Invalid IDs given. Please make sure to pass ObjectId compliant IDs.".format(datetime.now().isoformat()))
+    exit(1)
+
+print("{0} - INFO - Retrieving {1} file(s) from archive now.".format(datetime.now().isoformat(), len(files_to_retrieve)))
+for file in files_to_retrieve: print("\t" + file)
+
+if len(files_to_retrieve) > 0:
+    files_success = archive_repository.retrieve(files_to_retrieve=files_to_retrieve, print_log=True)
+
+    if len(files_success) == len(files_to_retrieve):
+        print("{0} - INFO - {1} of {2} requested file(s) retrieved successfully.".format(datetime.now().isoformat(), len(files_success), len(files_to_retrieve)))
+    else:
+        print("{0} - ERROR - Only {1} of {2} file(s) retrieved.".format(datetime.now().isoformat(), len(files_success), len(files_to_retrieve)))
+
+    updated_count = database_repository.set_in_storage_by_files(files_success)
+    if updated_count == len(files_success):
+        print("{0} - INFO - Database records of retrieved files updated successfully.".format(datetime.now().isoformat()))
+    else:
+        print("{0} - ERROR - Database updated only {1} of {2} record(s) of retrieve file(s).".format(datetime.now().isoformat(), updated_count, len(files_success)))
+
+print("{0} - END - Process ended.".format(datetime.now().isoformat()))

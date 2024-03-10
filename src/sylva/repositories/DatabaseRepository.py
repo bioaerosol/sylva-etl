@@ -8,6 +8,7 @@ from pymongo.collection import Collection
 from sylva.Configuration import DatabaseConfig
 from sylva.Configuration import Configuration
 from sylva.MetaData import MetaData
+from bson.objectid import ObjectId
 
 
 class DatabaseRepository:
@@ -43,6 +44,14 @@ class DatabaseRepository:
 
         return update_result.modified_count == 1
 
+    def get_file_names_by_ids(self, ids: typing.List[str], in_storage: bool) -> typing.List[str]:
+        try:
+            ids_objects = list(map(lambda x: ObjectId(x), ids))
+        except:
+            return None
+    
+        return list(map(lambda x: os.path.join(x["filePath"], x["fileName"]), self.get_storage_collection().find({"_id": {"$in": ids_objects}, "isInStorage": in_storage}, {"filePath": 1, "fileName": 1})))
+
     def set_archived_by_files(self, files: typing.List[str]) -> int:
         modified_count = 0
 
@@ -51,6 +60,18 @@ class DatabaseRepository:
             file_name_seg = os.path.basename(file)
 
             update_result = self.get_storage_collection().update_one({"fileName": file_name_seg, "filePath": path_seg}, {"$set": {"isArchived": True, "archivedOn": datetime.now(timezone.utc)}})
+            modified_count += update_result.modified_count
+
+        return modified_count
+    
+    def set_in_storage_by_files(self, files: typing.List[str]) -> int:
+        modified_count = 0
+
+        for file in files:
+            path_seg = os.path.dirname(file)
+            file_name_seg = os.path.basename(file)
+
+            update_result = self.get_storage_collection().update_one({"fileName": file_name_seg, "filePath": path_seg}, {"$set": {"isInStorage": True}})
             modified_count += update_result.modified_count
 
         return modified_count

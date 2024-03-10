@@ -7,12 +7,16 @@ SYLVA ETL is a debian package that provides tools to perform the SYLVA data flow
 
 2. Archive – Tape archive for long-term storage. Holds all raw data files.
 
-Three command are provided that will be called automtically but also can be used manually:
-1. ```sylva-store``` – Copies raw data files from incoming directory to storage. If configured, hooks will be called for each processed file. This mechanism provides the capability to do device type specific processing after a file has been put to storage. If a hook is configured the file will be put to hook’s STDIN. Calling the hook is a one-shot and output will be logged.
+Provided commands are:
+1. ```sylva-store``` – Copies raw data files from incoming directory to storage. If configured, hooks will be called for each processed file. This mechanism provides the capability to do device type specific processing after a file has been put to storage. If a hook is configured the file will be put to hook’s STDIN. Calling the hook is a one-shot and output will be logged. By default, this command is called by sylva-etl cronjob.
 
-2. ```sylva-archive``` – Archives files from storage to tape archive.
+2. ```sylva-archive``` – Archives files from storage to tape archive. By default, this command is called by sylva-etl cronjob.
 
-3. ```sylva-clean``` – Clean storage by removing files that contain data older than n days (default: 60 days) if they have been put to archive sucessfully.
+3. ```sylva-clean``` – Clean storage by removing files that contain data older than n days (default: 60 days) if they have been put to archive sucessfully. By default, this command is called by sylva-etl cronjob.
+
+4. ```sylva-restore``` Retrieves requested files form archive if they are not in storage anymore. 
+
+5. ```sylva-update-index``` Walks through storage and updates database index according to real exitsing file if this file is found in database index. Can be used if new attributes for index were introduced and you need to run an update on all database index entries.
 
 For help please refer to ```COMMAND --help```, e.g. ```sylva-store --help```.
 
