@@ -40,7 +40,8 @@ class ArchiveRepository:
     def retrieve(self, files_to_retrieve: typing.List[str], print_log: bool) -> typing.List[str]:
         with tempfile.NamedTemporaryFile(mode="w+") as temp_file:
             temp_file.write("\n".join([f'"{file}"' for file in files_to_retrieve]))
-
+            temp_file.flush()
+            
             app = subprocess.Popen(["dsmc", "retrieve", "-filelist=" + temp_file.name], stdout=subprocess.PIPE, text=True, universal_newlines=True)
             files_success = []
 
