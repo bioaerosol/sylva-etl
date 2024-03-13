@@ -7,26 +7,30 @@ import argparse
 from datetime import datetime
 
 from sylva import Configuration, Folder
-from sylva.repositories import DatabaseRepository, ArchiveRepository
+from sylva.repositories import DatabaseRepository, ArchiveRepository, WorkspaceRepository
 
 configuration = Configuration()
 
 parser = argparse.ArgumentParser(description="""Restore files from the archive to the storage directory.""")
-parser.add_argument('indices', nargs='+', help='IDs from database index of objects to be restored')
+parser.add_argument("indices", nargs="+", help="IDs from database index of objects to be restored")
+parser.add_argument("--workspaceDir", help="absolute path of directory where workspaces should be created; default is '{0}'".format(configuration.get_folders()[Folder.WORKSPACE.value]), action="store", required=False, default=configuration.get_folders()[Folder.WORKSPACE.value])
+parser.add_argument("--workspaceId", help="ID of the workspace to create for requested files.", action="store", required=False, default=None)
 
 args = parser.parse_args()
 
 database_repository = DatabaseRepository(configuration)
 archive_repository = ArchiveRepository()
+workspace_repository = WorkspaceRepository()
 
 files_to_retrieve = database_repository.get_file_names_by_ids(args.indices, in_storage=False)
 
-if (files_to_retrieve is None):
+if files_to_retrieve is None:
     print("{0} - ERROR - Invalid IDs given. Please make sure to pass ObjectId compliant IDs.".format(datetime.now().isoformat()))
     exit(1)
 
 print("{0} - INFO - Retrieving {1} file(s) from archive now.".format(datetime.now().isoformat(), len(files_to_retrieve)))
-for file in files_to_retrieve: print("\t" + file)
+for file in files_to_retrieve:
+    print("\t" + file)
 
 if len(files_to_retrieve) > 0:
     files_success = archive_repository.retrieve(files_to_retrieve=files_to_retrieve, print_log=True)
@@ -41,5 +45,11 @@ if len(files_to_retrieve) > 0:
         print("{0} - INFO - Database records of retrieved files updated successfully.".format(datetime.now().isoformat()))
     else:
         print("{0} - ERROR - Database updated only {1} of {2} record(s) of retrieve file(s).".format(datetime.now().isoformat(), updated_count, len(files_success)))
+
+if (args.workspaceId is not None) and (len(files_to_retrieve) == 0 or len(files_success) == len(files_to_retrieve)):
+    # we got all requested files successfully and workspace should be created
+    all_files = database_repository.get_file_names_by_ids(args.indices, in_storage=True)
+    workspace_path = workspace_repository.create_workspace(args.workspaceDir, args.workspaceId, all_files)
+    print("{0} - INFO - Workspace created at {1}.".format(datetime.now().isoformat(), workspace_path))
 
 print("{0} - END - Process ended.".format(datetime.now().isoformat()))

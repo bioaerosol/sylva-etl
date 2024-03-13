@@ -12,6 +12,7 @@ class Folder(Enum):
     INCOMING = "incoming"
     STORAGE = "storage"
     TRASH = "trash"
+    WORKSPACE = "workspace"
 
 class Configuration():
     __configuration = []
