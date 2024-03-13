@@ -14,15 +14,15 @@ parser = argparse.ArgumentParser(
     description="""Walks trough the storage and cleans files that contain data that is older than given days and that have been archived successfully. 
                    A double-check in archive is done to make sure that this file with the expected file size is stored in archive before deleting it.
                    This action is limited to 20 files per run starting with oldest data. To determine a file as "older than" the content of the file
-                   is relevant, not the file timestamp in file system."""
+                   is relevant, not the file timestamp in file system. Files with more than one hard link are not deleted as they are most likely used
+                   in workspaces and needs to be cleaned there first."""
 )
 
-parser.add_argument("--olderThan", help="clean files which data is older than this value (days); default is '{0}'".format(configuration.get_clean_older_than_days()), action="store", required=False, default=configuration.get_clean_older_than_days())
-parser.add_argument("--overrideEnabled", help="runs sylva-archive even if it is disabled in configuration file", action="store_true", default=False)
-parser.add_argument("--dryRun", help="if set no persistent action will be performed", action="store_true", default=False)
+parser.add_argument("--olderThan", help="Clean files which data is older than this value (days); default is '{0}'.".format(configuration.get_clean_older_than_days()), action="store", required=False, default=configuration.get_clean_older_than_days())
+parser.add_argument("--overrideEnabled", help="Runs sylva-clean even if it is disabled in configuration file.", action="store_true", default=False)
+parser.add_argument("--dryRun", help="If set no persistent action will be performed.", action="store_true", default=False)
 
 args = parser.parse_args()
-
 
 print("{0} - START - Process started.".format(datetime.now().isoformat()))
 if args.dryRun:
@@ -39,14 +39,18 @@ if configuration.is_clean_enabled() == True or args.overrideEnabled == True:
         file_to_delete = meta.get_full_file_with_path()
 
         if archive_repository.has_in_archive(meta):
-            print("{0} - INFO - Going to delete {1}.".format(datetime.now().isoformat(), file_to_delete))
+            if os.stat(file_to_delete).st_nlink > 1:
+                print("{0} - INFO - File {1} has 2+ hard links most likely used in workspaces. Won't delete it.".format(datetime.now().isoformat(), file_to_delete))
 
-            if args.dryRun == False:
-                os.remove(file_to_delete)
-                db_sucess = database_repository.set_out_of_storage_for_file(file_to_delete)
+            else:
+                print("{0} - INFO - Going to delete {1}.".format(datetime.now().isoformat(), file_to_delete))
 
-                if db_sucess == False:
-                    print("{0} - ERROR - Could not update database record for file {1}.".format(datetime.now().isoformat(), file_to_delete))
+                if args.dryRun == False:
+                    os.remove(file_to_delete)
+                    db_sucess = database_repository.set_out_of_storage_for_file(file_to_delete)
+
+                    if db_sucess == False:
+                        print("{0} - ERROR - Could not update database record for file {1}.".format(datetime.now().isoformat(), file_to_delete))
 
         else:
             print("{0} - ERROR - File {1} expected in archive but not found with its path and size of {2} bytes.".format(datetime.now().isoformat(), file_to_delete, meta.get_file_size()))
