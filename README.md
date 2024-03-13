@@ -1,11 +1,13 @@
 [![Test Debian Package](https://github.com/bioaerosol/sylva-etl/actions/workflows/test-debian-package.yml/badge.svg)](https://github.com/bioaerosol/sylva-etl/actions/workflows/test-debian-package.yml)  [![Release Debian Package](https://github.com/bioaerosol/sylva-etl/actions/workflows/release-debian-package.yml/badge.svg)](https://github.com/bioaerosol/sylva-etl/actions/workflows/release-debian-package.yml)
 
 # Overview
-SYLVA ETL is a debian package that provides tools to perform the SYLVA data flow. There are two types of storages:
+SYLVA ETL is a debian package that provides tools to perform the SYLVA data flow. There are three types of storages:
 
 1. Storage – Disk storage for fast access. Holds raw data files of last n days and raw data files that have been made accessible from archive upon request.
 
 2. Archive – Tape archive for long-term storage. Holds all raw data files.
+
+3. Workspace - Disk storage for fast access inside which files from storage are linked. Workspaces won't hold duplicates of files; they are just hard-linked.
 
 Provided commands are:
 1. ```sylva-store``` – Copies raw data files from incoming directory to storage. If configured, hooks will be called for each processed file. This mechanism provides the capability to do device type specific processing after a file has been put to storage. If a hook is configured the file will be put to hook’s STDIN. Calling the hook is a one-shot and output will be logged. By default, this command is called by sylva-etl cronjob.
@@ -14,7 +16,7 @@ Provided commands are:
 
 3. ```sylva-clean``` – Clean storage by removing files that contain data older than n days (default: 60 days) if they have been put to archive sucessfully. By default, this command is called by sylva-etl cronjob.
 
-4. ```sylva-restore``` Retrieves requested files form archive if they are not in storage anymore. 
+4. ```sylva-restore``` Retrieves requested files form archive if they are not in storage anymore and optionally creates a workspace that contains all requested files.
 
 5. ```sylva-update-index``` Walks through storage and updates database index according to real exitsing file if this file is found in database index. Can be used if new attributes for index were introduced and you need to run an update on all database index entries.
 
@@ -71,6 +73,7 @@ The package is configured in two YAML files in /etc/sylva:
 | folders.incoming | Path to incoming folder |
 | folders.storage | Path to storage folder |
 | folders.trash | Path to trash folder |
+| folders.workspace | Path for workspaces |
 
 Example with default values:
 ```yaml
@@ -89,6 +92,7 @@ folders:
   incoming: /home/sylva/incoming
   storage: /home/sylva/storage
   trash: /home/sylva/trash
+  workspace: /home/sylva/workspace
 hooks:
 ```
 ## Device Configuration

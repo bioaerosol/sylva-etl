@@ -13,3 +13,4 @@ folders:
   incoming: /home/sylva/incoming
   storage: /home/sylva/storage
   trash: /home/sylva/trash
+  workspace: /home/sylva/workspace
