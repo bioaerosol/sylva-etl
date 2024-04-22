@@ -33,8 +33,8 @@ class DatabaseRepository:
     def get_oldest_non_archived_meta_data(self, limit: int = 20) -> typing.List[MetaData]:
         return list(map(lambda x: MetaData.from_dict(x), self.get_storage_collection().aggregate([{"$match": {"isArchived": False}}, {"$sort": {"end": 1}}, {"$limit": limit}])))
 
-    def get_in_storage_archived_meta_data_older_than(self, older_than: datetime, limit: int = 20) -> typing.Iterator[MetaData]:
-        return map(lambda x: MetaData.from_dict(x), self.get_storage_collection().aggregate([{"$match": {"isInStorage": True, "isArchived": True, "end": {"$lt": older_than}}}, {"$sort": {"end": 1}}, {"$limit": limit}]))
+    def get_in_storage_archived_meta_data_older_than(self, older_than: datetime) -> typing.Iterator[MetaData]:
+        return map(lambda x: MetaData.from_dict(x), self.get_storage_collection().aggregate([{"$match": {"isInStorage": True, "isArchived": True, "end": {"$lt": older_than}}}, {"$sort": {"end": 1}}]))
 
     def set_out_of_storage_for_file(self, file) -> bool:
         path_seg = os.path.dirname(file)
