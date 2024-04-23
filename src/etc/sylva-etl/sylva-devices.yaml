@@ -4,7 +4,8 @@ locations:
     BAA500:
       - "00013"
   hooks:
-    - date
+    -
+      - date
 - name: DEUFS-JUPITER-1
   devices:
     Poleno:
