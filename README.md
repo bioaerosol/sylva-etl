@@ -100,7 +100,7 @@ hooks:
 | --- | --- |
 | locations | Array of locations where devices are installed |
 | locations[n].name | Name of the location. |
-| locations[n].hooks | List of hooks to be applied for files of this location. |
+| locations[n].hooks | List of hooks to be applied for files of this location. A hook itself is an array with command as first entry and optional paramters passed to this command. As last two parameters each hook call receives the raw data file and the ID of item in storage. |
 | locations[n].devices | Array of devices installed at this location |
 | locations[n].devices[n].BAA500 | Array of BAA500 devces installed at this location. Array contains entries of type string that refer to the ID of the devices installed at this location. |
 | locations[n].devices[n].Poleno | Array of Poleno devces installed at this location. Array contains entries of type string that refer to the ID of the devices installed at this location. |
