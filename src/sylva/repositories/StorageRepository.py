@@ -23,7 +23,7 @@ class StorageRepository(DatabaseRepository):
     def has_file(self, file_path: str, file_name: str) -> bool:
         return self.get_storage_collection().find_one({"filePath": file_path, "fileName": file_name}) is not None
 
-    def store(self, source_file: str, meta_data: MetaData) -> str:
+    def store(self, source_file: str, meta_data: MetaData) -> any:
         # determine target
         storage_target_path = self.get_storage_path(meta_data)
         storage_target_file = os.path.join(storage_target_path, os.path.basename(source_file))
@@ -36,9 +36,9 @@ class StorageRepository(DatabaseRepository):
         shutil.move(source_file, storage_target_file)
 
         # put meta_data to index
-        self.get_storage_collection().insert_one(meta_data)
+        insert_result = self.get_storage_collection().insert_one(meta_data)
 
-        return storage_target_file
+        return (storage_target_file, str(insert_result.inserted_id))
 
     def trash(self, source_file: str, process_id: str, reason: str = "undefined") -> str:
         # determine target

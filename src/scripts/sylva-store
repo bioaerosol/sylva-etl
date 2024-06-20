@@ -39,11 +39,12 @@ if (configuration.is_etl_enabled() == True or args.overrideEnabled == True):
                if meta is not None:          
                     if (storage_repository.has(meta) == False):
                          if (storage_repository.has_file(storage_repository.get_storage_path(meta), meta.get_file_name()) == False):
-                              result_file = storage_repository.store(filename, meta)
+                              (result_file, storage_id) = storage_repository.store(filename, meta)
                               print("{0} - {1} - OK - File {2} stored to {3}.".format(datetime.now().isoformat(), process_id, filename, result_file))
 
                               for hook in device_repository.get_hooks_for(meta.get_device_location()):
                                    hook.append(result_file)
+                                   hook.append(storage_id)
                                    print("{0} - {1} - INFO - Start of hook '{2}' for file {3}.".format(datetime.now().isoformat(), process_id, hook, result_file))
                                    output = subprocess.check_output(hook, text=True)
                                    print("\t | " + output.replace("\n", "\n\t | "))
