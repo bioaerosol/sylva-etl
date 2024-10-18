@@ -57,7 +57,7 @@ Package can be installed as any other Debian package, e.g.:
 sudo apt install <package-file>
 ```
 # Configuration
-The package is configured in two YAML files in /etc/sylva:
+The package is configured in two YAML files in /etc/sylva-etl:
 
 ## Package Configuration
 | Key | Description |
