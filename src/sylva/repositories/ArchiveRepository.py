@@ -42,7 +42,7 @@ class ArchiveRepository:
             temp_file.write("\n".join([f'"{file}"' for file in files_to_retrieve]))
             temp_file.flush()
             
-            app = subprocess.Popen(["dsmc", "retrieve", "-filelist=" + temp_file.name], stdout=subprocess.PIPE, text=True, universal_newlines=True)
+            app = subprocess.Popen(["dsmc", "retrieve", "-filelist=" + temp_file.name, "-replace=No"], stdout=subprocess.PIPE, text=True, universal_newlines=True)
             files_success = []
 
             if print_log:
