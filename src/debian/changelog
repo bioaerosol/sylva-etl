@@ -10,7 +10,7 @@ sylva-etl (0.0.1-2ubuntu4) UNRELEASED; urgency=medium
   * Added sylva-restore
   * Added workspaces 
 
- -- Robert Gebauer <robert.gebauer@gmx.de>  Wed, 13 Nar 2024 17:55:37 +0100
+ -- Robert Gebauer <robert.gebauer@gmx.de>  Wed, 13 Mar 2024 17:55:37 +0100
 
 sylva-etl (0.0.1-1) UNRELASED; urgency=low
 
